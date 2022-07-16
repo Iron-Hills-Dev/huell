@@ -1,0 +1,271 @@
+openapi: 3.0.3
+info:
+  title: User Service
+  description: User Service API Docs
+  version: '1.0'
+paths:
+  /auth/user/create:
+    post:
+      summary: Create user
+      description: This endpoint creates user with given data
+      requestBody:
+        description: New user data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateResponse'
+        '400':
+          description: Request rejected due to bad syntax/contents
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UsernameError'
+                  - $ref: '#/components/schemas/PasswordError'
+                  - $ref: '#/components/schemas/BadSyntaxError'
+
+  /auth/login:
+    post:
+      summary: Get user's auth token
+      description: This endpoint gives user's auth token if given auth data is correct
+      requestBody:
+        description: User auth data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+      responses:
+        '200':
+          description: Auth data is correct, auth token sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginResponse'
+        '400':
+          description: Request rejected due to bad syntax/wrong login data
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/LoginError'
+                  - $ref: '#/components/schemas/BadSyntaxError'
+  /auth/user:
+    get:
+      summary: Get user's data
+      description: Endpoint which returns specific user's data
+      responses:
+        '200':
+          description: Everything is correct, user data in response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDataResponse'
+        '401':
+          description: User authentication rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+    delete:
+      summary: Delete user
+      description: This endpoint deletes user and it's data
+      responses:
+        '204':
+          description: User deleted, no further information
+        '401':
+          description: User authentication rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+    put:
+      summary: Update user
+      description: This endpoint updates chosen user's data
+      requestBody:
+        description: New user's data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '204':
+          description: User updated successfully, no further information
+        '400':
+          description: Request rejected due to bad syntax/contents
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BadSyntaxError'
+                  - $ref: '#/components/schemas/PasswordError'
+                  - $ref: '#/components/schemas/UsernameError'
+        '401':
+          description: User authentication rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+    parameters:
+      - name: Authorization
+        in: header
+        description: JWT token of specific user
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        required: true
+        schema:
+          type: string
+        style: simple
+
+components:
+  schemas:
+    UserCreateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's nickname
+        password:
+          type: string
+          description: User's password (shh... it's secret)
+      example:
+        username: GALJO
+        password: qwerty1234
+    UserCreateResponse:
+      type: object
+      properties:
+        userID:
+          type: string
+          format: uuid
+          description: New user's ID
+      example:
+        userID: 08b499e5-2fad-49d9-8f8a-fd440f9d248f
+    UserLoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's nickname
+        password:
+          type: string
+          description: User's password (shh... it's secret)
+      example:
+        username: GALJO
+        password: qwerty1234
+    UserLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: User's JWT token
+      example:
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    UserDataResponse:
+      type: object
+      properties:
+        userID:
+          type: string
+          format: uuid
+          description: User's unique ID
+        username:
+          type: string
+          description: User's nickname
+      example:
+        userID: 08b499e5-2fad-49d9-8f8a-fd440f9d248f
+        username: GALJO
+    UserUpdateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's new username
+        password:
+          type: string
+          description: User's new password
+      example:
+        username: GALJO
+        password: qwerty123
+    UsernameError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Internal code
+        htmlCode:
+          type: integer
+          description: HTML code
+        desc:
+          type: string
+          description: Unacceptable username (specific problem)
+      example:
+        code: 111
+        htmlCode: 400
+        desc: Unacceptable username (it's busy)
+    PasswordError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Internal code
+        htmlCode:
+          type: integer
+          description: HTML code
+        desc:
+          type: string
+          description: Unacceptable password (specific problem)
+      example:
+        code: 111
+        htmlCode: 400
+        desc: Unacceptable password (too short)
+    LoginError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Internal code
+        htmlCode:
+          type: integer
+          description: HTML code
+        desc:
+          type: string
+          description: Wrong username/password
+    AuthError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Internal code
+        htmlCode:
+          type: integer
+          description: HTML code
+        desc:
+          type: string
+          description: Authentication rejected (specific reason)
+      example:
+        code: 111
+        htmlCode: 401
+        desc: Authentication rejected (no token given)
+    BadSyntaxError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Internal code
+        htmlCode:
+          type: integer
+          description: HTML code
+        desc:
+          type: string
+          description: Specific description of syntax problem
+      example:
+        code: 111
+        htmlCode: 400
+        desc: Missing required argument (username)
