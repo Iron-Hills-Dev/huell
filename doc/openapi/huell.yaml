@@ -1,0 +1,330 @@
+openapi: 3.0.3
+info:
+  title: Huell
+  description: Huell (the auth API) docs
+  version: '1.0'
+paths:
+  /api/v1/login:
+    post:
+      summary: Get user's auth token
+      description: This endpoint gives user's auth token if given auth data is correct
+      tags:
+       - Auth
+      requestBody:
+        description: User auth data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+      responses:
+        '200':
+          description: Auth data is correct, auth token sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginResponse'
+        '400':
+          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '406':
+          description: Request rejected due to wrong login data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+        - name: Accept
+          in: header
+          description: What user accepts as result
+          example: application/json
+          required: true
+          schema:
+            type: string
+          style: simple
+        - name: Content-Type
+          in: header
+          description: What type user sends in request
+          example: application/json
+          required: true
+          schema:
+            type: string
+          style: simple
+  /api/v1/user:
+    get:
+      summary: Get user's data
+      description: Endpoint which returns specific user's data
+      tags:
+        - User
+      responses:
+        '200':
+          description: Everything is correct, user data in response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDataResponse'
+        '401':
+          description: User authentication rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Request rejected due to wrong Content-Type or Accept headers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT token of specific user
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
+          required: true
+          schema:
+            type: string
+          style: simple
+        - name: Accept
+          in: header
+          description: What user accepts as result
+          example: application/json
+          required: true
+          schema:
+            type: string
+          style: simple
+    post:
+      summary: Create user
+      description: This endpoint creates user with given data
+      tags:
+        - User
+      requestBody:
+        description: New user data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateResponse'
+        '400':
+          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '406':
+          description: Request rejected due to wrong content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+        - name: Accept
+          in: header
+          description: What user accepts as result
+          example: application/json
+          required: true
+          schema:
+            type: string
+          style: simple
+        - name: Content-Type
+          in: header
+          description: What type user sends in request
+          example: application/json
+          required: true
+          schema:
+            type: string
+          style: simple
+        - name: Authorization
+          in: header
+          description: JWT token of specific user
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
+          required: true
+          schema:
+            type: string
+          style: simple
+    delete:
+      summary: Delete user
+      description: This endpoint deletes user and it's data
+      tags:
+        - User
+      responses:
+        '204':
+          description: User deleted, no further information
+        '400':
+          description: Request rejected due to wrong Content-Type or Accept headers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: User authentication rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+        - name: Accept
+          in: header
+          description: What user accepts as result
+          example: application/json
+          required: true
+          schema:
+            type: string
+          style: simple
+        - name: Authorization
+          in: header
+          description: JWT token of specific user
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
+          required: true
+          schema:
+            type: string
+          style: simple
+  /api/v1/user/change-passwd:
+    put:
+      summary: Change password
+      description: This endpoint changes user's password
+      tags:
+        - User
+      requestBody:
+        description: Old and new user's password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPasswdChangeRequest"
+      responses:
+        '204':
+          description: Password changed, no further information
+        '401':
+          description: User authentication rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '406':
+          description: Request rejected due to wrong content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    parameters:
+      - name: Accept
+        in: header
+        description: What user accepts as result
+        example: application/json
+        required: true
+        schema:
+          type: string
+        style: simple
+      - name: Content-Type
+        in: header
+        description: What type user sends in request
+        example: application/json
+        required: true
+        schema:
+          type: string
+        style: simple
+      - name: Authorization
+        in: header
+        description: JWT token of specific user
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
+        required: true
+        schema:
+          type: string
+        style: simple
+
+components:
+  schemas:
+    UserCreateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's nickname
+        password:
+          type: string
+          description: User's password (shh... it's secret)
+      example:
+        username: GALJO
+        password: qwerty1234
+    UserCreateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: New user's ID
+      example:
+        userID: 08b499e5-2fad-49d9-8f8a-fd440f9d248f
+    UserLoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's nickname
+        password:
+          type: string
+          description: User's password (shh... it's secret)
+      example:
+        username: GALJO
+        password: qwerty1234
+    UserLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: User's JWT token
+      example:
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
+    UserDataResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User's unique ID
+        username:
+          type: string
+          description: User's nickname
+      example:
+        userID: 08b499e5-2fad-49d9-8f8a-fd440f9d248f
+        username: GALJO
+    UserPasswdChangeRequest:
+      type: object
+      properties:
+        currentPasswd:
+          type: string
+          description: User's current password
+        newPasswd:
+          type: string
+          description: User's new password
+      example:
+        currentPasswd: qwerty1234
+        newPasswd: qwertyuiop!
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+        desc:
+          type: string
+          description: Details of error
+      example:
+        code: CME
+        desc: User ate too much cookies
