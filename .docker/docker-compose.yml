@@ -1,0 +1,50 @@
+version: "3.4"
+services:
+  huell:
+    build:
+      dockerfile: .docker/Dockerfile
+      context: ../
+    container_name: huell
+    environment:
+      FLASK_APP: app
+      HUELL_LOGLEVEL: INFO
+      HUELL_DB_URL: postgresql://huell:huell@huell-postgres:5432/huell
+    ports:
+      - "5000:5000"
+    depends_on:
+      - huell-postgres
+
+  huell-postgres:
+    image: postgres:14.4
+    container_name: huell-postgres
+    environment:
+      POSTGRES_PASSWORD: huell
+      POSTGRES_USER: huell
+
+  huell-pgadmin:
+    image: dpage/pgadmin4:6.11
+    container_name: huell-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: codebusters@ironhills.dev
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    ports:
+      - "5050:80"
+
+  huell-openapi:
+    image: swaggerapi/swagger-ui
+    container_name: huell-openapi
+    volumes:
+      - ../doc/openapi:/usr/share/nginx/html/doc
+    environment:
+      API_URL: doc/huell.yaml
+
+  huell-nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx/
+    container_name: huell-nginx
+    ports:
+      - "5080:80"
+    depends_on:
+      - huell
+      - huell-openapi
