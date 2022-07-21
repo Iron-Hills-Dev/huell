@@ -5,7 +5,6 @@ from flask import Config
 _logging_level_env_ = "HUELL_LOGLEVEL"
 
 
-
 def logging_init(_config: Config):
     _handler = get_logging_handler(_config[_logging_level_env_])
     _logger = create_logger(_handler)
@@ -48,6 +47,9 @@ def get_logging_handler(_loglevel: str) -> logging.StreamHandler:
             _loglevel = logging.ERROR
         case "CRITICAL":
             _loglevel = logging.CRITICAL
+        case _:
+            logging.critical("ABORTING INIT - unknown HUELL_LOGLEVEL environment variable")
+            exit(1)
     ch.setLevel(logging.DEBUG)
     ch.setFormatter(CustomFormatter())
     return ch
