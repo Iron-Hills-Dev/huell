@@ -22,19 +22,19 @@ def config_user_module(_config: Config, _config_port: ConfigPort) -> [UserModify
         Prepares configuration of ports in USER module
     """
     logging.info("Configuring user ports")
-    match _config.get("HUELL_USER_PORT"):
+    match _config.get("HUELL_PERSISTENT_PORT"):
         case "DATABASE":
-            logging.info("Configuring DATABASE user ports")
+            logging.info("Chosen user ports configuration: DATABASE")
             _engine_ = init_database(_config)
 
             _query = DatabaseUserQueryAdapter(_engine_)
             _user_config = _config_port.read_user_config(_config.get("HUELL_CONFIG_PATH"))
             return DatabaseUserModifyAdapter(_engine_, _user_config, _query), _query
         case "TEST":
-            logging.warning("TEST user ports - not working ports chosen")
+            logging.warning("Chosen user ports configuration: TEST - will not work")
             return UserModifyPort, UserQueryPort
         case _:
-            logging.critical("ABORTING INIT - unknown HUELL_USER_PORT environment variable")
+            logging.critical("ABORTING INIT - unknown HUELL_PERSISTENT_PORT environment variable")
             exit(1)
 
 
@@ -42,10 +42,10 @@ def config_config_module(_config: Config) -> [ConfigPort]:
     logging.info("Configuring config ports")
     match _config.get("HUELL_CONFIG_PORT"):
         case "YAML":
-            logging.info("Configuring YAML config ports")
+            logging.info("Chosen user ports configuration: YAML")
             return YAMLConfigAdapter()
         case "TEST":
-            logging.warning("TEST config ports - not working ports chosen")
+            logging.warning("Chosen user ports configuration: TEST - will not work")
             return ConfigPort
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_CONFIG_PORT environment variable")

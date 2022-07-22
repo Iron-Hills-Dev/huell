@@ -6,10 +6,15 @@ _logging_level_env_ = "HUELL_LOGLEVEL"
 
 
 def logging_init(_config: Config):
-    _handler = get_logging_handler(_config[_logging_level_env_])
-    _logger = create_logger(_handler)
+    _loglevel = get_loglevel(_config[_logging_level_env_])
+    ch = logging.StreamHandler()
+    ch.setLevel(_loglevel)
+    ch.setFormatter(CustomFormatter())
+    logger = logging.getLogger()
+    logger.handlers.clear()
+    logger.setLevel(_loglevel)
+    logger.addHandler(ch)
     logging.info("Logging activated")
-    return _logger
 
 
 class CustomFormatter(logging.Formatter):
@@ -34,29 +39,18 @@ class CustomFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def get_logging_handler(_loglevel: str) -> logging.StreamHandler:
-    ch = logging.StreamHandler()
+def get_loglevel(_loglevel: str):
     match _loglevel:
         case "DEBUG":
-            _loglevel = logging.DEBUG
+            return logging.DEBUG
         case "INFO":
-            _loglevel = logging.INFO
+            return logging.INFO
         case "WARN":
-            _loglevel = logging.WARN
+            return logging.WARN
         case "ERROR":
-            _loglevel = logging.ERROR
+            return logging.ERROR
         case "CRITICAL":
-            _loglevel = logging.CRITICAL
+            return logging.CRITICAL
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_LOGLEVEL environment variable")
             exit(1)
-    ch.setLevel(logging.DEBUG)
-    ch.setFormatter(CustomFormatter())
-    return ch
-
-
-def create_logger(_handler: logging.StreamHandler) -> logging.Logger:
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(_handler)
-    return logger

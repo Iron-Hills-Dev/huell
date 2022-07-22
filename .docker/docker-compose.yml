@@ -8,9 +8,9 @@ services:
     environment:
       FLASK_APP: app
       HUELL_LOGLEVEL: INFO
-      HUELL_USER_PORT: DATABASE
+      HUELL_PERSISTENT_PORT: DATABASE
       HUELL_CONFIG_PORT: YAML
-      HUELL_CONFIG_PATH: .configs/yml-example-config.yml
+      HUELL_CONFIG_PATH: .config/huell-config.yml
       HUELL_DB_URL: postgresql://huell:huell@huell-postgres:5432/huell
     ports:
       - "5000:5000"

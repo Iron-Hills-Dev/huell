@@ -67,14 +67,19 @@ In this section we will talk about what defines Huell - environment variables!
 * `CRITICAL` - Also called `SCREAMS AND SWEARS` - Huell will only talk to you when he needs to stop entire server
   because of you!
 
-`HUELL_USER_PORT` - With this variable you can choose in which diary Huell will write info about users.
+`HUELL_PERSISTENT_PORT` - With this variable you can choose type of diary where Huell will save all info.
 For now Huell is fussy and is able to write only in `DATABASE`, but it can change over time :).
 
-`HUELL_DB_URL` - If you choose `DATABASE` as `HUELL_USER_PORT` you also need to give this variable, with
-you database URL.\
+`HUELL_DB_URL` - If you choose `DATABASE` as `HUELL_PERSISTENT_PORT` you also need to give this variable, filled with
+your database URL.\
 Database URL model: `DATABASE_SERVICE://USER:PASSWORD@HOSTNAME:PORT/DBNAME`\
 Database URL example: `postgresql://huell:huell@huell:8888/huell`\
 <sup><sub>**DISCLAIMER** For now only fully tested and 100% working database is POSTGRESQL</sub></sup>
+
+`HUELL_CONFIG_PORT` - With this variable you can choose how you will give Huell config.
+For now only option is `YAML`. You can find example of config in other section.
+
+`HUELL_CONFIG_PATH` - Other related to config variable. This time you need to point path to your Huell config file.
 
 ## How to use dockerized Huell
 
@@ -96,7 +101,7 @@ Firstly, go to Huell habitat (his repo folder) and go to .docker folder in it
 ```
 cd [path to huell repo]/.docker
 ```
-
+<small>(optional) You can change dockerized Huell's config in .docker/.config folder.</small>\
 Then you just need to perform one simple commands to start Huell's work
 
 ```
@@ -129,3 +134,21 @@ If you want to communicate with your Huell, you need to connect with specific po
 * **POSTGRES HOST:** huell-postgres:5432 (only accessible through PGADMIN)
 * **POSTGRES USERNAME:** huell
 * **POSTGRES PASSWD:** huell
+
+
+## Config examples
+### YAML
+
+```
+user_config:
+  username_char_wl: "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890.:_-+="
+  username_char_bl: ~
+  passwd_char_wl: ~
+  passwd_char_bl: ~
+  username_min_len: 4
+  username_max_len: 16
+  passwd_min_len: 7
+  passwd_max_len: 25
+```
+<sup><sub>example-config.yml</sub></sup>
+
