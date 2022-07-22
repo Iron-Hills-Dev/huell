@@ -10,5 +10,6 @@ COPY ./application ./application
 COPY ./domain ./domain
 COPY ./infrastructure ./infrastructure
 COPY ./app.py ./
+COPY ./.configs ./.configs
 
 ENTRYPOINT [ "sh", "-c", "pipenv run flask run --host=0.0.0.0" ]

@@ -11,9 +11,9 @@ from tests.decors import using_database
 
 
 @using_database
-def test_find_user_by_id_should_find(db_engine):
+def test_find_user_by_id_should_find(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
     _ph_ = PasswordHasher()
 
     _cmd = UserCreateCmd("GALJO", "qwerty!")
@@ -43,9 +43,9 @@ def test_find_user_by_id_fake_user(db_engine):
 
 
 @using_database
-def test_find_user_by_username_should_find(db_engine):
+def test_find_user_by_username_should_find(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
     _ph_ = PasswordHasher()
 
     _cmd = UserCreateCmd("GALJO", "qwerty!")

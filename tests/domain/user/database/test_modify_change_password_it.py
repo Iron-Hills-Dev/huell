@@ -12,9 +12,9 @@ from tests.decors import using_database
 
 
 @using_database
-def test_change_password_should_change(db_engine):
+def test_change_password_should_change(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
     ph = PasswordHasher()
 
     _cmd = UserCreateCmd("GALJO", "qwertyuiop")
@@ -32,9 +32,9 @@ def test_change_password_should_change(db_engine):
 
 
 @using_database
-def test_change_password_wrong_old_password(db_engine):
+def test_change_password_wrong_old_password(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     _cmd = UserCreateCmd("GALJO", "qwertyuiop")
     _id = modify.create_user(_cmd)
@@ -46,12 +46,12 @@ def test_change_password_wrong_old_password(db_engine):
     with pytest.raises(AuthError):
         modify.change_password(_cmd) \
  \
-        @using_database
+        @ using_database
 
 
-def test_change_password_fake_user(db_engine):
+def test_change_password_fake_user(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     # given
     _cmd = ChangePasswordCmd(UUID("0c5390a9-e069-4a15-8186-d41d7be31be4"), "qwertyuiop", "asdfghjkl")
@@ -62,9 +62,9 @@ def test_change_password_fake_user(db_engine):
 
 
 @using_database
-def test_change_password_too_short_passwd(db_engine):
+def test_change_password_too_short_passwd(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     _cmd = UserCreateCmd("GALJO", "qwertyuiop")
     _id = modify.create_user(_cmd)
@@ -78,9 +78,9 @@ def test_change_password_too_short_passwd(db_engine):
 
 
 @using_database
-def test_change_password_too_long_passwd(db_engine):
+def test_change_password_too_long_passwd(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     _cmd = UserCreateCmd("GALJO", "qwertyuiop")
     _id = modify.create_user(_cmd)
@@ -91,3 +91,5 @@ def test_change_password_too_long_passwd(db_engine):
     # when & then
     with pytest.raises(PasswordSyntaxError):
         modify.change_password(_cmd)
+
+# TODO tests with bl and wl

@@ -6,6 +6,7 @@ from argon2.exceptions import VerifyMismatchError
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
+from domain.config.model.UserConfig import UserConfig
 from domain.user.adapter.database.utils.check_user_help_functions import check_username, check_password
 from domain.user.adapter.database.utils.user_utils import user_to_entity
 from domain.user.exceptions import AuthError, UserNotFound
@@ -21,8 +22,9 @@ _ph_ = PasswordHasher()
 
 
 class DatabaseUserModifyAdapter(UserModifyPort):
-    def __init__(self, _engine_: Engine, _user_query_port: UserQueryPort):
+    def __init__(self, _engine_: Engine, _config_: UserConfig, _user_query_port: UserQueryPort):
         self._engine_ = _engine_
+        self._config_ = _config_
         self.query = _user_query_port
 
     def create_user(self, _cmd: UserCreateCmd) -> UUID:
@@ -67,7 +69,6 @@ class DatabaseUserModifyAdapter(UserModifyPort):
 
     def check_user(self, _user: User, _password: str) -> None:
         logging.debug(f"Checking user {_user.id} syntax")
-        check_username(_user.username, self._engine_)
-        check_password(_password)
+        check_username(_user.username, self._config_, self._engine_)
+        check_password(_password, self._config_)
         logging.debug("User is correct")
-

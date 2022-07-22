@@ -9,9 +9,9 @@ from tests.decors import using_database
 
 
 @using_database
-def test_create_user_should_create(db_engine):
+def test_create_user_should_create(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
     ph = PasswordHasher()
 
     # given
@@ -28,9 +28,9 @@ def test_create_user_should_create(db_engine):
 
 
 @using_database
-def test_create_user_too_short_username(db_engine):
+def test_create_user_too_short_username(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     # given
     _cmd = UserCreateCmd("GAL", "qwerty!")
@@ -41,9 +41,9 @@ def test_create_user_too_short_username(db_engine):
 
 
 @using_database
-def test_create_user_too_long_username(db_engine):
+def test_create_user_too_long_username(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     # given
     _cmd = UserCreateCmd("GALJOGALJOGALJOOO", "qwerty!")
@@ -54,9 +54,9 @@ def test_create_user_too_long_username(db_engine):
 
 
 @using_database
-def test_create_user_busy_username(db_engine):
+def test_create_user_busy_username(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     # given
     _cmd = UserCreateCmd("GALJO", "qwerty!")
@@ -68,9 +68,9 @@ def test_create_user_busy_username(db_engine):
 
 
 @using_database
-def test_create_user_too_short_passwd(db_engine):
+def test_create_user_too_short_passwd(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     # given
     _cmd = UserCreateCmd("GALJO", "qwerty")
@@ -81,9 +81,9 @@ def test_create_user_too_short_passwd(db_engine):
 
 
 @using_database
-def test_create_user_too_long_passwd(db_engine):
+def test_create_user_too_long_passwd(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     # given
     _cmd = UserCreateCmd("GALJO", "qwertyuiopqwertyuiopqwerty")
@@ -91,3 +91,5 @@ def test_create_user_too_long_passwd(db_engine):
     # when & then
     with pytest.raises(PasswordSyntaxError) as _exc:
         modify.create_user(_cmd)
+
+# TODO tests with bl and wl

@@ -9,9 +9,9 @@ from tests.decors import using_database
 
 
 @using_database
-def test_delete_user_should_delete(db_engine):
+def test_delete_user_should_delete(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     _cmd = UserCreateCmd("GALJO", "qwertyuiop")
     _id = modify.create_user(_cmd)
@@ -28,9 +28,9 @@ def test_delete_user_should_delete(db_engine):
 
 
 @using_database
-def test_delete_user_fake_user(db_engine):
+def test_delete_user_fake_user(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
 
     # given
     _cmd = UserDeleteCmd("8ba4e672-391b-4e9a-b0a3-c4a4f4b5537e")
