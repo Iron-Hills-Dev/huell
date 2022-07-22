@@ -1,11 +1,9 @@
 import logging
 from functools import wraps
-
-from sqlalchemy.orm import Session
+from time import sleep
 
 from infrastructure.postgres.init_db import create_database_structure
-from infrastructure.postgres.model.user_entity import UserEntity
-from infrastructure.postgres.model.version_entity import VersionEntity
+from infrastructure.postgres.model.dec_base import drop_all_tables
 
 
 def using_database(f):
@@ -15,15 +13,12 @@ def using_database(f):
         _engine_ = kwargs["db_engine"]
         create_database_structure(_engine_)
         logging.debug("Starting test")
-
-        f(*args, **kwargs)
-
-        logging.debug("Test finished")
-        with Session(_engine_) as session:
-            logging.debug("Database transaction started: clearing database")
-            session.query(UserEntity).delete()
-            session.query(VersionEntity).delete()
-            session.commit()
-        logging.debug("Database cleared")
+        try:
+            f(*args, **kwargs)
+        finally:
+            logging.debug("Test finished")
+            logging.debug("Clearing database")
+            drop_all_tables(_engine_)
+            logging.debug("Database cleared")
 
     return wrapper

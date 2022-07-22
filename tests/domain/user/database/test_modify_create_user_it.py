@@ -1,6 +1,7 @@
 import pytest
 from argon2 import PasswordHasher
 
+from domain.config.model.UserConfig import UserConfig
 from domain.user.adapter.database.database_user_modify_adapter import DatabaseUserModifyAdapter
 from domain.user.adapter.database.database_user_query_adapter import DatabaseUserQueryAdapter
 from domain.user.exceptions import UsernameSyntaxError, PasswordSyntaxError
@@ -92,4 +93,58 @@ def test_create_user_too_long_passwd(db_engine, user_config):
     with pytest.raises(PasswordSyntaxError) as _exc:
         modify.create_user(_cmd)
 
-# TODO tests with bl and wl
+
+@using_database
+def test_create_user_used_illegal_char_in_passwd_wl(db_engine):
+    user_config = UserConfig(passwd_char_wl="abc")
+    query = DatabaseUserQueryAdapter(db_engine)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
+
+    # given
+    _cmd = UserCreateCmd("GALJO", "abc!cba")
+
+    # when & then
+    with pytest.raises(PasswordSyntaxError) as _exc:
+        modify.create_user(_cmd)
+
+
+@using_database
+def test_create_user_used_illegal_char_in_passwd_bl(db_engine):
+    user_config = UserConfig(passwd_char_bl="/Jx")
+    query = DatabaseUserQueryAdapter(db_engine)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
+
+    # given
+    _cmd = UserCreateCmd("GALJO", "abcdefghiJkl")
+
+    # when & then
+    with pytest.raises(PasswordSyntaxError) as _exc:
+        modify.create_user(_cmd)
+
+
+@using_database
+def test_create_user_used_illegal_char_in_username_wl(db_engine):
+    user_config = UserConfig(username_char_wl="abc")
+    query = DatabaseUserQueryAdapter(db_engine)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
+
+    # given
+    _cmd = UserCreateCmd("GALJO", "abc_abc")
+
+    # when & then
+    with pytest.raises(UsernameSyntaxError) as _exc:
+        modify.create_user(_cmd)
+
+
+@using_database
+def test_create_user_used_illegal_char_in_username_bl(db_engine):
+    user_config = UserConfig(username_char_bl="y#l")
+    query = DatabaseUserQueryAdapter(db_engine)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
+
+    # given
+    _cmd = UserCreateCmd("GAL#JO", "qwerty!")
+
+    # when & then
+    with pytest.raises(UsernameSyntaxError) as _exc:
+        modify.create_user(_cmd)

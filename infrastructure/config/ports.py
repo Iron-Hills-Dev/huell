@@ -32,13 +32,13 @@ def config_user_module(_config: Config, _config_port: ConfigPort) -> [UserModify
             return DatabaseUserModifyAdapter(_engine_, _user_config, _query), _query
         case "TEST":
             logging.warning("TEST user ports - not working ports chosen")
-            return UserModifyPort(), UserQueryPort()
+            return UserModifyPort, UserQueryPort
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_USER_PORT environment variable")
             exit(1)
 
 
-def config_config_module(_config: Config) -> ConfigPort:
+def config_config_module(_config: Config) -> [ConfigPort]:
     logging.info("Configuring config ports")
     match _config.get("HUELL_CONFIG_PORT"):
         case "YAML":
@@ -46,7 +46,7 @@ def config_config_module(_config: Config) -> ConfigPort:
             return YAMLConfigAdapter()
         case "TEST":
             logging.warning("TEST config ports - not working ports chosen")
-            return ConfigPort()
+            return ConfigPort
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_CONFIG_PORT environment variable")
             exit(1)

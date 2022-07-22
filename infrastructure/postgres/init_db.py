@@ -7,8 +7,8 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 from sqlalchemy_utils import database_exists, create_database
 
-from infrastructure.postgres.model.user_entity import UserEntity
-from infrastructure.postgres.model.version_entity import VersionEntity
+from infrastructure.postgres.model.VersionEntity import VersionEntity
+from infrastructure.postgres.model.dec_base import create_all_tables
 
 _version_ = "1.0"
 
@@ -30,15 +30,15 @@ def init_database(_config: Config) -> Engine:
 
 def create_database_structure(_engine_: Engine) -> None:
     logging.info("Creating database structure")
+    create_all_tables(_engine_)
     create_version_ref(_engine_)
-    create_user_table(_engine_)
     logging.info("Created database structure successfully")
 
 
 def get_db_engine(_url: str) -> Engine:
     logging.info("Initializing database engine")
     if not database_exists(_url):
-        logging.warning(f"Database doesn't exist: creating")
+        logging.warning(f"Database does not exist: creating")
         create_database(_url)
 
     logging.debug("Creating database engine")
@@ -48,13 +48,12 @@ def get_db_engine(_url: str) -> Engine:
 
 
 def create_version_ref(_engine_: Engine) -> None:
-    logging.debug("Creating version table")
-    version_tab = VersionEntity(version=_version_)
-    version_tab.create(_engine_)
+    logging.debug(f"Creating version reference: version={_version_})")
+    version_entity = VersionEntity(version=_version_)
     with Session(_engine_) as session:
-        logging.debug(f"Creating version reference (version: {_version_})")
-        session.add(version_tab)
+        session.add(version_entity)
         session.commit()
+    logging.debug("Created version reference")
 
 
 def is_structure_outdated(_engine_: Engine) -> bool:
@@ -66,9 +65,3 @@ def is_structure_outdated(_engine_: Engine) -> bool:
             return True
     logging.debug("Db structure is not outdated")
     return False
-
-
-def create_user_table(_engine_: Engine) -> None:
-    logging.debug("Creating user table")
-    user_tab = UserEntity()
-    user_tab.create(_engine_)

@@ -3,6 +3,7 @@ from uuid import UUID
 import pytest
 from argon2 import PasswordHasher
 
+from domain.config.model.UserConfig import UserConfig
 from domain.user.adapter.database.database_user_modify_adapter import DatabaseUserModifyAdapter
 from domain.user.adapter.database.database_user_query_adapter import DatabaseUserQueryAdapter
 from domain.user.exceptions import AuthError, UserNotFound, PasswordSyntaxError
@@ -44,11 +45,10 @@ def test_change_password_wrong_old_password(db_engine, user_config):
 
     # when & then
     with pytest.raises(AuthError):
-        modify.change_password(_cmd) \
- \
-        @ using_database
+        modify.change_password(_cmd)
 
 
+@using_database
 def test_change_password_fake_user(db_engine, user_config):
     query = DatabaseUserQueryAdapter(db_engine)
     modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
@@ -92,4 +92,36 @@ def test_change_password_too_long_passwd(db_engine, user_config):
     with pytest.raises(PasswordSyntaxError):
         modify.change_password(_cmd)
 
-# TODO tests with bl and wl
+
+@using_database
+def test_change_password_used_illegal_char_wl(db_engine):
+    user_config = UserConfig(passwd_char_wl="abc")
+    query = DatabaseUserQueryAdapter(db_engine)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
+
+    _cmd = UserCreateCmd("GALJO", "abcabcabc")
+    _id = modify.create_user(_cmd)
+
+    # given
+    _cmd = ChangePasswordCmd(_id, "abcabcabc", "acb1acbc")
+
+    # when & then
+    with pytest.raises(PasswordSyntaxError):
+        modify.change_password(_cmd)
+
+
+@using_database
+def test_change_password_used_illegal_char_bl(db_engine):
+    user_config = UserConfig(passwd_char_bl="/")
+    query = DatabaseUserQueryAdapter(db_engine)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
+
+    _cmd = UserCreateCmd("GALJO", "qwertyuiop")
+    _id = modify.create_user(_cmd)
+
+    # given
+    _cmd = ChangePasswordCmd(_id, "qwertyuiop", "dzien/dobry")
+
+    # when & then
+    with pytest.raises(PasswordSyntaxError):
+        modify.change_password(_cmd)

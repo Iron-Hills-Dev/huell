@@ -1,7 +1,7 @@
 import logging
 
 from domain.user.model.User import User
-from infrastructure.postgres.model.user_entity import UserEntity
+from infrastructure.postgres.model.UserEntity import UserEntity
 
 
 def user_to_entity(_user: User) -> UserEntity:
