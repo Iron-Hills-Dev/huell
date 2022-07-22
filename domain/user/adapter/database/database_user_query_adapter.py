@@ -5,6 +5,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from domain.user.adapter.database.utils.user_utils import entity_to_user
+from domain.user.exceptions import UserNotFound
 from domain.user.model.User import User
 from domain.user.user_query_port import UserQueryPort
 from infrastructure.postgres.model.user_entity import UserEntity
@@ -19,6 +20,9 @@ class DatabaseUserQueryAdapter(UserQueryPort):
         with Session(self._engine_) as session:
             logging.debug("Database transaction started: searching for user")
             _user_entity = session.query(UserEntity).filter(UserEntity.id == _id).first()
+            if _user_entity is None:
+                logging.error("Given ID does not match any user in database")
+                raise UserNotFound(f"User with ID {_id} does not exist")
             _user = entity_to_user(_user_entity)
         logging.debug("User found successfully")
         return _user
@@ -28,6 +32,9 @@ class DatabaseUserQueryAdapter(UserQueryPort):
         with Session(self._engine_) as session:
             logging.debug("Database transaction started: searching for user")
             _user_entity = session.query(UserEntity).filter(UserEntity.username == _username).first()
+            if _user_entity is None:
+                logging.error("Given username does not match any user in database")
+                raise UserNotFound(f"User {_username} does not exist")
             _user = entity_to_user(_user_entity)
         logging.debug("User found successfully")
         return _user

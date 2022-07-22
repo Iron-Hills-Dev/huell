@@ -15,7 +15,7 @@ def check_username(_username: str, _engine_: Engine) -> None:
     # TODO whitelista znakow kiedys i configurowalny check
     with Session(_engine_) as session:
         _query = session.query(UserEntity).filter(UserEntity.username == _username)
-        if len(_query):
+        if len(list(_query)):
             logging.error("Chosen username is busy")
             raise UsernameSyntaxError(_desc=f"Username {_username} is busy")
     logging.debug("Username is correct")

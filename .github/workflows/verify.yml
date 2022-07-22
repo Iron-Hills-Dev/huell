@@ -24,4 +24,4 @@ jobs:
 
       - name: Run test suites
         run: |
-          echo there will be executed some tests
+          pipenv run python3.10 -m pytest tests
