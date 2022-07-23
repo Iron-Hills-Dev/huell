@@ -1,0 +1,10 @@
+user_config:
+  username_char_wl: "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890.:_-+="
+  username_char_bl: ~
+  passwd_char_wl: ~
+  passwd_char_bl: ~
+  username_min_len: 4
+  username_max_len: 16
+  passwd_min_len: 7
+  passwd_max_len: 25
+

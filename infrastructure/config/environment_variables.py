@@ -11,5 +11,5 @@ def import_envs(_config: Config):
     for k, v in environ.items():
         if k.startswith(ENV_PREFIX):
             _config.update({k: v})
-            logging.debug(f"Environment variable {k} has been imported")
+            logging.debug(f"Environment variable has been imported: {k}")
     logging.info("Environment variables imported successfully")

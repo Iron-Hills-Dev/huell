@@ -55,8 +55,8 @@ paths:
           style: simple
   /api/v1/user:
     get:
-      summary: Get user's data
-      description: Endpoint which returns specific user's data
+      summary: Get user's data by id
+      description: Endpoint which returns specific user's data by id
       tags:
         - User
       responses:
