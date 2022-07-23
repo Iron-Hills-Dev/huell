@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from domain.user.adapter.database.utils.user_utils import entity_to_user
+from domain.user.adapter.database.utils.user_utils import entity_to_user, get_user_entity
 from domain.user.exceptions import UserNotFound
 from domain.user.model.User import User
 from domain.user.user_query_port import UserQueryPort
@@ -16,29 +16,23 @@ class DatabaseUserQueryAdapter(UserQueryPort):
         self._engine_ = _engine_
 
     def find_user_by_id(self, _id: UUID) -> User:
-        logging.debug(f"Searching for user: id={_id}")
+        logging.debug(f"Searching user: id={_id}")
         with Session(self._engine_) as session:
-            logging.debug("Database transaction started: searching for user")
-            _user_entity = session \
-                .query(UserEntity) \
-                .get(_id)
-            if _user_entity is None:
-                logging.error("Given ID does not match any user in database")
-                raise UserNotFound(f"User with ID {_id} does not exist")
+            _user_entity = get_user_entity(session, _id)
             _user = entity_to_user(_user_entity)
-        logging.debug(f"User found successfully: {_user}")
+        logging.debug(f"User was found successfully: {_user}")
         return _user
 
     def find_user_by_username(self, _username: str) -> User:
-        logging.debug(f"Searching for user username={_username}")
+        logging.debug(f"Searching user: username={_username}")
         with Session(self._engine_) as session:
             _user_entity = session \
                 .query(UserEntity) \
                 .filter_by(username=_username) \
                 .first()
             if _user_entity is None:
-                logging.error("Given username does not match any user in database")
+                logging.error(f"Given username does not match any user in database: username={_username}")
                 raise UserNotFound(f"User {_username} does not exist")
             _user = entity_to_user(_user_entity)
-        logging.debug(f"User found successfully: {_user}")
+        logging.debug(f"User was found successfully: {_user}")
         return _user

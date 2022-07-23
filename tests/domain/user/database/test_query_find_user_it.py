@@ -12,13 +12,11 @@ from tests.decors import using_database
 
 @using_database
 def test_find_user_by_id_should_find(db_engine, user_config):
+    # given
     query = DatabaseUserQueryAdapter(db_engine)
     modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
     _ph_ = PasswordHasher()
-
     _cmd = UserCreateCmd("GALJO", "qwerty!")
-
-    # given
     _id = modify.create_user(_cmd)
 
     # when
@@ -32,9 +30,8 @@ def test_find_user_by_id_should_find(db_engine, user_config):
 
 @using_database
 def test_find_user_by_id_fake_user(db_engine):
-    query = DatabaseUserQueryAdapter(db_engine)
-
     # given
+    query = DatabaseUserQueryAdapter(db_engine)
     _id = UUID("30278478-1561-424d-8e4d-d0ad72bf867f")
 
     # when & then
@@ -44,14 +41,13 @@ def test_find_user_by_id_fake_user(db_engine):
 
 @using_database
 def test_find_user_by_username_should_find(db_engine, user_config):
+    # given
     query = DatabaseUserQueryAdapter(db_engine)
     modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
     _ph_ = PasswordHasher()
 
     _cmd = UserCreateCmd("GALJO", "qwerty!")
     _id = modify.create_user(_cmd)
-
-    # given
     _username = "GALJO"
 
     # when
@@ -65,9 +61,8 @@ def test_find_user_by_username_should_find(db_engine, user_config):
 
 @using_database
 def test_find_user_by_username_fake_user(db_engine):
-    query = DatabaseUserQueryAdapter(db_engine)
-
     # given
+    query = DatabaseUserQueryAdapter(db_engine)
     _username = "doomsdayIsComing"
 
     # when & then

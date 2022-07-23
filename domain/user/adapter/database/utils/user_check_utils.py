@@ -10,14 +10,14 @@ from infrastructure.postgres.model.UserEntity import UserEntity
 
 
 def check_user(_config_: UserConfig, _engine_: Engine, _user: User, _password: str) -> None:
-    logging.debug(f"Checking user {_user.id} syntax")
+    logging.debug(f"Checking user syntax: {_user}")
     check_username(_config_, _engine_, _user.username)
     check_password(_config_, _password)
     logging.debug("User is correct")
 
 
 def check_username(_config_: UserConfig, _engine_: Engine, _username: str) -> None:
-    logging.debug(f"Checking username {_username}")
+    logging.debug(f"Checking username: username={_username}")
     if _config_.username_min_len is not None:
         if len(_username) < _config_.username_min_len:
             logging.error(f"Given username is too short ({len(_username)} vs {_config_.username_min_len})")
@@ -36,14 +36,14 @@ def check_username(_config_: UserConfig, _engine_: Engine, _username: str) -> No
     elif _config_.username_char_bl is not None:
         for _ch in _username:
             if _ch in _config_.username_char_bl:
-                logging.error(f"Given username contains illegal character {_ch}")
-                raise UsernameSyntaxError(f"Username contains illegal character {_ch}"
+                logging.error(f"Given username contains illegal character: {_ch}")
+                raise UsernameSyntaxError(f"Username contains illegal character: {_ch}"
                                           f" (character blacklist: '{_config_.username_char_bl}')")
 
     with Session(_engine_) as session:
         _query = session.query(UserEntity).filter(UserEntity.username == _username)
         if len(list(_query)):
-            logging.error("Chosen username is busy")
+            logging.error(f"Chosen username is busy: username={_username}")
             raise UsernameSyntaxError(_desc=f"Username {_username} is busy")
     logging.debug("Username is correct")
 

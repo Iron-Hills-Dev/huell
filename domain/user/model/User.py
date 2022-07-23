@@ -1,5 +1,9 @@
 from uuid import UUID
 
+from domain.util.dto_utils import to_string
+
+_SENSITIVE_FIELDS = ["password"]
+
 
 class User:
     def __init__(self, _id: UUID, username: str, password: str):
@@ -8,6 +12,4 @@ class User:
         self.password = password
 
     def __str__(self) -> str:
-        _dict = self.__dict__.copy()
-        _dict.pop("password")
-        return f'User{_dict}'
+        return to_string(self, _SENSITIVE_FIELDS)

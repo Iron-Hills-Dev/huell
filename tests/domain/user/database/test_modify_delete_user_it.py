@@ -2,7 +2,7 @@ import pytest
 
 from domain.user.adapter.database.database_user_modify_adapter import DatabaseUserModifyAdapter
 from domain.user.adapter.database.database_user_query_adapter import DatabaseUserQueryAdapter
-from domain.user.exceptions import UserNotFound
+from domain.user.exceptions import UserNotFound, UserDeleteError
 from domain.user.model.UserCreateCmd import UserCreateCmd
 from domain.user.model.UserDeleteCmd import UserDeleteCmd
 from tests.decors import using_database
@@ -36,5 +36,5 @@ def test_delete_user_fake_user(db_engine, user_config):
     _cmd = UserDeleteCmd("8ba4e672-391b-4e9a-b0a3-c4a4f4b5537e")
 
     # when & then
-    with pytest.raises(UserNotFound):
+    with pytest.raises(UserDeleteError):
         modify.delete_user(_cmd)

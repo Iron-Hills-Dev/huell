@@ -6,7 +6,7 @@ from argon2 import PasswordHasher
 from domain.config.model.UserConfig import UserConfig
 from domain.user.adapter.database.database_user_modify_adapter import DatabaseUserModifyAdapter
 from domain.user.adapter.database.database_user_query_adapter import DatabaseUserQueryAdapter
-from domain.user.exceptions import AuthError, UserNotFound, PasswordSyntaxError
+from domain.user.exceptions import UserNotFound, PasswordSyntaxError, ChangePasswordError
 from domain.user.model.ChangePasswordCmd import ChangePasswordCmd
 from domain.user.model.UserCreateCmd import UserCreateCmd
 from tests.decors import using_database
@@ -44,7 +44,7 @@ def test_change_password_wrong_old_password(db_engine, user_config):
     _cmd = ChangePasswordCmd(_id, "hihihaha!", "asdfghjkl")
 
     # when & then
-    with pytest.raises(AuthError):
+    with pytest.raises(ChangePasswordError):
         modify.change_password(_cmd)
 
 
@@ -57,7 +57,7 @@ def test_change_password_fake_user(db_engine, user_config):
     _cmd = ChangePasswordCmd(UUID("0c5390a9-e069-4a15-8186-d41d7be31be4"), "qwertyuiop", "asdfghjkl")
 
     # when & then
-    with pytest.raises(UserNotFound):
+    with pytest.raises(ChangePasswordError):
         modify.change_password(_cmd)
 
 
