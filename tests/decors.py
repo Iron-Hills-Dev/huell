@@ -1,6 +1,5 @@
 import logging
 from functools import wraps
-from time import sleep
 
 from infrastructure.postgres.init_db import create_database_structure
 from infrastructure.postgres.model.dec_base import drop_all_tables

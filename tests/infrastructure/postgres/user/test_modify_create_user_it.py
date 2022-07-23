@@ -2,8 +2,8 @@ import pytest
 from argon2 import PasswordHasher
 
 from domain.config.model.UserConfig import UserConfig
-from domain.user.adapter.database.database_user_modify_adapter import DatabaseUserModifyAdapter
-from domain.user.adapter.database.database_user_query_adapter import DatabaseUserQueryAdapter
+from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
+from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
 from domain.user.exceptions import UsernameSyntaxError, PasswordSyntaxError
 from domain.user.model.UserCreateCmd import UserCreateCmd
 from tests.decors import using_database

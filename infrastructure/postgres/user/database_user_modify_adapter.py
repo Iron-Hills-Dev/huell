@@ -7,8 +7,8 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from domain.config.model.UserConfig import UserConfig
-from domain.user.adapter.database.utils.user_check_utils import check_user, check_password
-from domain.user.adapter.database.utils.user_utils import user_to_entity, get_user_entity
+from infrastructure.postgres.user.utils.user_check_utils import check_user, check_password
+from infrastructure.postgres.user.utils.user_utils import user_to_entity, get_user_entity
 from domain.user.exceptions import UserNotFound, UserCreateError, UserDeleteError, ChangePasswordError
 from domain.user.model.ChangePasswordCmd import ChangePasswordCmd
 from domain.user.model.User import User
@@ -16,7 +16,6 @@ from domain.user.model.UserCreateCmd import UserCreateCmd
 from domain.user.model.UserDeleteCmd import UserDeleteCmd
 from domain.user.user_modify_port import UserModifyPort
 from domain.user.user_query_port import UserQueryPort
-from infrastructure.postgres.model.UserEntity import UserEntity
 
 _ph_ = PasswordHasher()
 

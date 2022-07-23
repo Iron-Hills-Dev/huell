@@ -4,8 +4,8 @@ from flask import Config
 
 from domain.config.adapter.YAML.yaml_config_adapter import YAMLConfigAdapter
 from domain.config.config_port import ConfigPort
-from domain.user.adapter.database.database_user_modify_adapter import DatabaseUserModifyAdapter
-from domain.user.adapter.database.database_user_query_adapter import DatabaseUserQueryAdapter
+from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
+from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
 from domain.user.user_modify_port import UserModifyPort
 from domain.user.user_query_port import UserQueryPort
 from infrastructure.postgres.init_db import init_database
