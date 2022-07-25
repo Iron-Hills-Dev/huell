@@ -5,7 +5,11 @@ from flask import Config
 _logging_level_env_ = "HUELL_LOGLEVEL"
 
 
-def logging_init(_config: Config):
+def logging_init(_config: Config) -> None:
+    """
+    Function to initialize logging
+    :param _config: app config
+    """
     _loglevel = get_loglevel(_config[_logging_level_env_])
     ch = logging.StreamHandler()
     ch.setLevel(_loglevel)
