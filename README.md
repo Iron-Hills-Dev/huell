@@ -81,6 +81,10 @@ For now only option is `YAML`. You can find example of config in other section.
 
 `HUELL_CONFIG_PATH` - Other related to config variable. This time you need to point path to your Huell config file.
 
+`HUELL_JWT_PORT` - Choose JWT adapter you want to use. For now only option is `JWT`.
+
+`HUELL_JWT_SECRET` - Secret phrase to sign and decode JWT. Don't let it leak! 
+
 ## How to use dockerized Huell
 
 If you don't want to fight with Huell, you just want to accept him and use his help, then this is section for you!
@@ -101,6 +105,7 @@ Firstly, go to Huell habitat (his repo folder) and go to .docker folder in it
 ```
 cd [path to huell repo]/.docker
 ```
+
 <small>(optional) You can change dockerized Huell's config in .docker/.config folder.</small>\
 Then you just need to perform one simple commands to start Huell's work
 
@@ -135,8 +140,8 @@ If you want to communicate with your Huell, you need to connect with specific po
 * **POSTGRES USERNAME:** huell
 * **POSTGRES PASSWD:** huell
 
-
 ## Config examples
+
 ### YAML
 
 ```
@@ -149,6 +154,11 @@ user_config:
   username_max_len: 16
   passwd_min_len: 7
   passwd_max_len: 25
+
+jwt_config:
+  algorithm: "HS512" # only symmetric (HS256, HS384, HS512)
+  exp_time: 1800 # in seconds
 ```
+
 <sup><sub>example-config.yml</sub></sup>
 
