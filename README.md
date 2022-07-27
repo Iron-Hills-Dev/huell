@@ -56,34 +56,48 @@ pipenv shell
 
 ### About environments
 
-In this section we will talk about what defines Huell - environment variables!
-
+In this section we will talk about what defines Huell - environment variables!\
+<sup><span style="color:#DD1919">* - required</span></sup>\
 `HUELL_LOGLEVEL` - With this you can decide what do you want to know about Huell actions:
 
 * `DEBUG` - Huell will report you about every step he does - if you can't handle higher levels, this is for you!
-* `INFO` - Standard level - Huell reports only about more important stuff, leaving details for him.
+* `INFO` - **Default level** - Huell reports only about more important stuff, leaving details for him.
 * `WARN` - Huell only reports about most important happenings - when it isn't bad yet, but it can be soon.
 * `ERROR` - Huell only reports about major problems that somehow stopped Huell's current job.
 * `CRITICAL` - Also called `SCREAMS AND SWEARS` - Huell will only talk to you when he needs to stop entire server
   because of you!
 
-`HUELL_PERSISTENT_PORT` - With this variable you can choose type of diary where Huell will save all info.
-For now Huell is fussy and is able to write only in `DATABASE`, but it can change over time :).
-
-`HUELL_DB_URL` - If you choose `DATABASE` as `HUELL_PERSISTENT_PORT` you also need to give this variable, filled with
-your database URL.\
+`HUELL_DB_URL`<span style="color:#DD1919">*</span> - URL to database, where Huell can write his memories :).\
 Database URL model: `DATABASE_SERVICE://USER:PASSWORD@HOSTNAME:PORT/DBNAME`\
 Database URL example: `postgresql://huell:huell@huell:8888/huell`\
 <sup><sub>**DISCLAIMER** For now only fully tested and 100% working database is POSTGRESQL</sub></sup>
 
-`HUELL_CONFIG_PORT` - With this variable you can choose how you will give Huell config.
-For now only option is `YAML`. You can find example of config in other section.
+#### User config
 
-`HUELL_CONFIG_PATH` - Other related to config variable. This time you need to point path to your Huell config file.
+* `HUELL_USER_USERNAME_CHAR_WL`
+  (**default:** `"qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890.:_-+="`) - Program will only accept
+  username created with chars in given string. Do not fill `HUELL_USER_USERNAME_CHAR_BL`
+  while using this variable.
+* `HUELL_USER_USERNAME_CHAR_BL` (**default:** `""`) - Program will only accept username without chars in this string.
+  Do not fill `HUELL_USER_USERNAME_CHAR_WL` while using this variable.
+* `HUELL_USER_USERNAME_MIN_LEN` (**default:** `4`) - Program will only accept username longer than that value.
+  `-1`: no limit.
+* `HUELL_USER_USERNAME_MAX_LEN` (**default:** `16`) - Program will only accept username shorter than that value.
+  `-1`: no limit.
 
-`HUELL_JWT_PORT` - Choose JWT adapter you want to use. For now only option is `JWT`.
+**Same logic applies to next 4 envs**
 
-`HUELL_JWT_SECRET` - Secret phrase to sign and decode JWT. Don't let it leak! 
+* `HUELL_USER_PASSWD_CHAR_WL` (**default:** `""`)
+* `HUELL_USER_PASSWD_CHAR_BL` (**default:** `""`)
+* `HUELL_USER_PASSWD_MIN_LEN` (**default:** `7`)
+* `HUELL_USER_PASSWD_MAX_LEN` (**default:** `25`)
+
+#### JWT config
+
+* `HUELL_JWT_ALGORITHM` (**default:** `"HS512"`) - Symmetric JWT algorithm program will use.
+  You can choose: `HS256`, `HS384` or `HS512`
+* `HUELL_JWT_EXP_TIME` (**default:** `1800`) - Time (in seconds) in which JWT will expire.
+* `HUELL_JWT_SECRET`<span style="color:#DD1919">*</span> - Secret phrase to sign and decode JWT. Don't let it leak!
 
 ## How to use dockerized Huell
 

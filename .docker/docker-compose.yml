@@ -6,12 +6,6 @@ services:
       context: ../
     container_name: huell
     environment:
-      FLASK_APP: app
-      HUELL_LOGLEVEL: INFO
-      HUELL_PERSISTENT_PORT: DATABASE
-      HUELL_CONFIG_PORT: YAML
-      HUELL_CONFIG_PATH: .config/huell-config.yml
-      HUELL_JWT_PORT: JWT
       HUELL_JWT_SECRET: DOCKERIZEDhuell
       HUELL_DB_URL: postgresql://huell:huell@huell-postgres:5432/huell
     ports:

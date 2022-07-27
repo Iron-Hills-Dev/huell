@@ -1,22 +1,23 @@
 from abc import ABC, abstractmethod
 
+from domain.jwt.model.JWTPayload import JWTPayload
 from domain.jwt.model.JWTSignCmd import JWTSignCmd
 from domain.jwt.model.JWTDecodeCmd import JWTDecodeCmd
 
 
 class JWTPort(ABC):
     @abstractmethod
-    def sign(self, _cmd: JWTSignCmd):
+    def sign(self, cmd: JWTSignCmd) -> str:
         """
         Signs a JWT for user authentication
-        :param _cmd: Sign command
+        :param cmd: Sign command
         """
         pass
 
     @abstractmethod
-    def decode(self, _cmd: JWTDecodeCmd) -> dict:
+    def decode(self, cmd: JWTDecodeCmd) -> JWTPayload:
         """
         Verifies and decodes given JWT
-        :param _cmd: Decode command
+        :param cmd: Decode command
         """
         pass

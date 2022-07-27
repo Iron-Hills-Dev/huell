@@ -7,4 +7,6 @@ user_config:
   username_max_len: 16
   passwd_min_len: 7
   passwd_max_len: 25
-
+jwt_config:
+  algorithm: "HS512"
+  exp_time: 1800

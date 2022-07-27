@@ -2,15 +2,17 @@ import logging
 
 from flask import Config
 
-from domain.config.adapter.YAML.yaml_config_adapter import YAMLConfigAdapter
+from domain.config.adapter.config.config_adapter import ConfigAdapter
 from domain.config.config_port import ConfigPort
 from domain.jwt.adapter.jwt.jwt_adapter import JWTAdapter
 from domain.jwt.jwt_port import JWTPort
-from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
-from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
 from domain.user.user_modify_port import UserModifyPort
 from domain.user.user_query_port import UserQueryPort
+from domain.util.test_adapters.test_adapters import TestConfigAdapter, TestJWTAdapter, TestUserModifyAdapter, \
+    TestUserQueryAdapter
 from infrastructure.postgres.init_db import init_database
+from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
+from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
 
 
 class AppPorts:
@@ -20,7 +22,7 @@ class AppPorts:
         self.jwt_port = config_jwt_module(_config, self.config_port)
 
 
-def config_user_module(_config: Config, _config_port: [ConfigPort]) -> [UserModifyPort, UserQueryPort]:
+def config_user_module(_config: Config, _config_port: ConfigPort) -> [UserModifyPort, UserQueryPort]:
     """
     Configures user module
     :param _config: App config (environments)
@@ -33,17 +35,17 @@ def config_user_module(_config: Config, _config_port: [ConfigPort]) -> [UserModi
             logging.info("Chosen user ports configuration: DATABASE")
             _engine_ = init_database(_config)
             _query = DatabaseUserQueryAdapter(_engine_)
-            _user_config = _config_port().read_user_config(_config.get("HUELL_CONFIG_PATH"))
+            _user_config = _config_port.read_user_config()
             return DatabaseUserModifyAdapter(_engine_, _user_config, _query), _query
         case "TEST":
             logging.warning("Chosen user ports configuration: TEST - will not work")
-            return UserModifyPort, UserQueryPort
+            return TestUserModifyAdapter(), TestUserQueryAdapter()
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_PERSISTENT_PORT environment variable")
             exit(1)
 
 
-def config_config_module(_config: Config) -> [ConfigPort]:
+def config_config_module(_config: Config) -> ConfigPort:
     """
     Configures config module
     :param _config: App config (environments)
@@ -51,18 +53,18 @@ def config_config_module(_config: Config) -> [ConfigPort]:
     """
     logging.info("Configuring config ports")
     match _config.get("HUELL_CONFIG_PORT"):
-        case "YAML":
+        case "CONFIG":
             logging.info("Chosen config ports configuration: YAML")
-            return YAMLConfigAdapter
+            return ConfigAdapter(_config)
         case "TEST":
             logging.warning("Chosen config ports configuration: TEST - will not work")
-            return ConfigPort
+            return TestConfigAdapter()
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_CONFIG_PORT environment variable")
             exit(1)
 
 
-def config_jwt_module(_config: Config, _config_port: [ConfigPort]) -> [JWTPort]:
+def config_jwt_module(_config: Config, _config_port: ConfigPort) -> JWTPort:
     """
     Configures JWT module
     :param _config: App config (environments)
@@ -73,11 +75,11 @@ def config_jwt_module(_config: Config, _config_port: [ConfigPort]) -> [JWTPort]:
     match _config.get("HUELL_JWT_PORT"):
         case "JWT":
             logging.info("Chosen JWT ports configuration: JWT")
-            _jwt_config = _config_port().read_jwt_config(_path=_config.get("HUELL_CONFIG_PATH"))
-            return JWTAdapter(_jwt_config, _config.get("HUELL_JWT_SECRET"))
+            _jwt_config = _config_port.read_jwt_config()
+            return JWTAdapter(_jwt_config)
         case "TEST":
             logging.warning("Chosen JWT ports configuration: TEST - will not work")
-            return JWTPort
+            return TestJWTAdapter()
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_JWT_PORT environment variable")
             exit(1)

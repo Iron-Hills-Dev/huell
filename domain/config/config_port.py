@@ -6,8 +6,9 @@ from domain.config.model.UserConfig import UserConfig
 
 class ConfigPort(ABC):
     @abstractmethod
-    def read_user_config(self, _path: str) -> UserConfig:
+    def read_user_config(self) -> UserConfig:
         pass
 
-    def read_jwt_config(self, _path: str) -> JWTConfig:
+    @abstractmethod
+    def read_jwt_config(self) -> JWTConfig:
         pass

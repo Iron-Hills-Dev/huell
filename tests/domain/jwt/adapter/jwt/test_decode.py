@@ -1,3 +1,4 @@
+import time
 from time import sleep
 from uuid import UUID
 
@@ -12,8 +13,8 @@ from domain.jwt.model.JWTSignCmd import JWTSignCmd
 
 def test_decode_should_decode():
     # given
-    _config = JWTConfig("HS512", 60)
-    _port = JWTAdapter(_config, "test")
+    _config = JWTConfig("HS512", 60, "test")
+    _port = JWTAdapter(_config)
 
     _sign_cmd = JWTSignCmd(UUID("bd8b0f75-bdf7-49ec-9de7-abd76e10edf1"))
     _jwt = _port.sign(_sign_cmd)
@@ -24,14 +25,17 @@ def test_decode_should_decode():
     _payload = _port.decode(_cmd)
 
     # then
-    assert _payload["user_id"] == str(_sign_cmd.user_id)
-    assert type(_payload["birth"]) == float
+    assert _payload.user_id == str(_sign_cmd.user_id)
+    assert _payload.exp - time.time() > 0
+    assert _payload.iss == "HUELL"
+    assert _payload.sub == "HUELL"
+    assert time.time() - _payload.iat < 60
 
 
 def test_decode_wrong_secret():
     # given
-    _config = JWTConfig("HS512", 60)
-    _port = JWTAdapter(_config, "test")
+    _config = JWTConfig("HS512", 60, "test")
+    _port = JWTAdapter(_config)
 
     _sign_cmd = JWTSignCmd(UUID("bd8b0f75-bdf7-49ec-9de7-abd76e10edf1"))
     _jwt = _port.sign(_sign_cmd)
@@ -39,15 +43,16 @@ def test_decode_wrong_secret():
     _cmd = JWTDecodeCmd(_jwt)
 
     # when & then
-    _port = JWTAdapter(_config, "test2")
+    _config = JWTConfig("HS512", 60, "test2")
+    _port = JWTAdapter(_config)
     with pytest.raises(JWTDecodeError):
         _port.decode(_cmd)
 
 
 def test_decode_expired_jwt():
     # given
-    _config = JWTConfig("HS512", 2)
-    _port = JWTAdapter(_config, "test")
+    _config = JWTConfig("HS512", 2, "test")
+    _port = JWTAdapter(_config)
 
     _sign_cmd = JWTSignCmd(UUID("bd8b0f75-bdf7-49ec-9de7-abd76e10edf1"))
     _jwt = _port.sign(_sign_cmd)
