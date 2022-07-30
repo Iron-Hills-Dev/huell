@@ -17,36 +17,36 @@ from domain.user.model.UserDeleteCmd import UserDeleteCmd
 from domain.user.user_modify_port import UserModifyPort
 from domain.user.user_query_port import UserQueryPort
 
-_ph_ = PasswordHasher()
+ph = PasswordHasher()
 
 
 class DatabaseUserModifyAdapter(UserModifyPort):
-    def __init__(self, _engine_: Engine, _config_: UserConfig, _user_query_port: UserQueryPort):
-        self._engine_ = _engine_
-        self._config_ = _config_
-        self.query = _user_query_port
+    def __init__(self, engine: Engine, config: UserConfig, user_query_port: UserQueryPort):
+        self.engine = engine
+        self.config = config
+        self.query = user_query_port
 
-    def create_user(self, _cmd: UserCreateCmd) -> UUID:
-        logging.debug(f"Creating user: {_cmd}")
-        _user = User(uuid4(), _cmd.username, _ph_.hash(_cmd.password))
-        check_user(self._config_, self._engine_, _user, _cmd.password)
-        _user_entity = user_to_entity(_user)
+    def create_user(self, cmd: UserCreateCmd) -> UUID:
+        logging.debug(f"Creating user: {cmd}")
+        user = User(uuid4(), cmd.username, ph.hash(cmd.password))
+        check_user(self.config, self.engine, user, cmd.password)
+        user_entity = user_to_entity(user)
         try:
-            with Session(self._engine_) as session:
-                session.add(_user_entity)
+            with Session(self.engine) as session:
+                session.add(user_entity)
                 session.commit()
         except Exception as _e:
             logging.error(f"Transaction failed during user creation: exception={_e}")
             raise UserCreateError("User cannot be created")
-        logging.debug(f"User was created successfully: {_user}")
-        return _user.id
+        logging.debug(f"User was created successfully: {user}")
+        return user.id
 
-    def delete_user(self, _cmd: UserDeleteCmd) -> None:
-        logging.debug(f"Deleting user: {_cmd}")
+    def delete_user(self, cmd: UserDeleteCmd) -> None:
+        logging.debug(f"Deleting user: {cmd}")
         try:
-            with Session(self._engine_) as session:
-                _user_entity = get_user_entity(session, _cmd.id)
-                session.delete(_user_entity)
+            with Session(self.engine) as session:
+                user_entity = get_user_entity(session, cmd.id)
+                session.delete(user_entity)
                 session.commit()
         except UserNotFound:
             raise UserDeleteError("User cannot be deleted - user does not exist")
@@ -55,14 +55,14 @@ class DatabaseUserModifyAdapter(UserModifyPort):
             raise UserDeleteError("User cannot be deleted")
         logging.debug(f"User was deleted successfully")
 
-    def change_password(self, _cmd: ChangePasswordCmd) -> None:
-        logging.debug(f"Changing password: {_cmd}")
-        check_password(self._config_, _cmd.new_password)
+    def change_password(self, cmd: ChangePasswordCmd) -> None:
+        logging.debug(f"Changing password: {cmd}")
+        check_password(self.config, cmd.new_password)
         try:
-            with Session(self._engine_) as session:
-                _user_entity = get_user_entity(session, _cmd.user_id)
-                _ph_.verify(_user_entity.password, _cmd.old_password)
-                _user_entity.password = _ph_.hash(_cmd.new_password)
+            with Session(self.engine) as session:
+                user_entity = get_user_entity(session, cmd.user_id)
+                ph.verify(user_entity.password, cmd.old_password)
+                user_entity.password = ph.hash(cmd.new_password)
                 session.commit()
             logging.debug(f"Password was successfully changed")
         except UserNotFound:

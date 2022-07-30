@@ -8,13 +8,13 @@ from domain.user.model.UserDeleteCmd import UserDeleteCmd
 
 class UserModifyPort(ABC):
     @abstractmethod
-    def create_user(self, _cmd: UserCreateCmd) -> UUID:
+    def create_user(self, cmd: UserCreateCmd) -> UUID:
         pass
 
     @abstractmethod
-    def delete_user(self, _cmd: UserDeleteCmd) -> None:
+    def delete_user(self, cmd: UserDeleteCmd) -> None:
         pass
 
     @abstractmethod
-    def change_password(self, _cmd: ChangePasswordCmd) -> None:
+    def change_password(self, cmd: ChangePasswordCmd) -> None:
         pass

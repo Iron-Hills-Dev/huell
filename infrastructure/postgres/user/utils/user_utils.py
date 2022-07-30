@@ -8,18 +8,18 @@ from domain.user.model.User import User
 from infrastructure.postgres.model.UserEntity import UserEntity
 
 
-def user_to_entity(_user: User) -> UserEntity:
-    _entity = UserEntity(id=_user.id, username=_user.username, password=_user.password)
+def user_to_entity(user: User) -> UserEntity:
+    _entity = UserEntity(id=user.id, username=user.username, password=user.password)
     return _entity
 
 
-def entity_to_user(_entity: UserEntity) -> User:
-    _user = User(_entity.id, _entity.username, _entity.password)
+def entity_to_user(entity: UserEntity) -> User:
+    _user = User(entity.id, entity.username, entity.password)
     return _user
 
 
-def get_user_entity(_session: Session, _id: UUID) -> UserEntity:
-    _user_entity = _session \
+def get_user_entity(session: Session, _id: UUID) -> UserEntity:
+    _user_entity = session \
         .query(UserEntity) \
         .get(_id)
     if _user_entity is None:

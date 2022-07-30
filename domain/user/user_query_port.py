@@ -10,5 +10,5 @@ class UserQueryPort(ABC):
         pass
 
     @abstractmethod
-    def find_user_by_username(self, _username: str) -> User:
+    def find_user_by_username(self, username: str) -> User:
         pass
