@@ -8,8 +8,7 @@ from domain.jwt.adapter.jwt.jwt_adapter import JWTAdapter
 from domain.jwt.jwt_port import JWTPort
 from domain.user.user_modify_port import UserModifyPort
 from domain.user.user_query_port import UserQueryPort
-from domain.util.test_adapters.test_adapters import TestConfigAdapter, TestJWTAdapter, TestUserModifyAdapter, \
-    TestUserQueryAdapter
+import tests.util.fake_adapters.fake_adapters as fake
 from infrastructure.postgres.init_db import init_database
 from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
 from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
@@ -39,7 +38,7 @@ def config_user_module(_config: Config, _config_port: ConfigPort) -> [UserModify
             return DatabaseUserModifyAdapter(_engine_, _user_config, _query), _query
         case "TEST":
             logging.warning("Chosen user ports configuration: TEST - will not work")
-            return TestUserModifyAdapter(), TestUserQueryAdapter()
+            return fake.FakeUserModifyAdapter(), fake.FakeUserQueryAdapter()
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_PERSISTENT_PORT environment variable")
             exit(1)
@@ -58,7 +57,7 @@ def config_config_module(_config: Config) -> ConfigPort:
             return ConfigAdapter(_config)
         case "TEST":
             logging.warning("Chosen config ports configuration: TEST - will not work")
-            return TestConfigAdapter()
+            return fake.FakeConfigAdapter()
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_CONFIG_PORT environment variable")
             exit(1)
@@ -79,7 +78,7 @@ def config_jwt_module(_config: Config, _config_port: ConfigPort) -> JWTPort:
             return JWTAdapter(_jwt_config)
         case "TEST":
             logging.warning("Chosen JWT ports configuration: TEST - will not work")
-            return TestJWTAdapter()
+            return fake.FakeJWTAdapter()
         case _:
             logging.critical("ABORTING INIT - unknown HUELL_JWT_PORT environment variable")
             exit(1)

@@ -15,7 +15,7 @@ from domain.user.user_modify_port import UserModifyPort
 from domain.user.user_query_port import UserQueryPort
 
 
-class TestUserModifyAdapter(UserModifyPort):
+class FakeUserModifyAdapter(UserModifyPort):
     def create_user(self, cmd: UserCreateCmd) -> UUID:
         pass
 
@@ -26,7 +26,7 @@ class TestUserModifyAdapter(UserModifyPort):
         pass
 
 
-class TestUserQueryAdapter(UserQueryPort):
+class FakeUserQueryAdapter(UserQueryPort):
     def find_user_by_id(self, _id: UUID) -> User:
         pass
 
@@ -34,7 +34,7 @@ class TestUserQueryAdapter(UserQueryPort):
         pass
 
 
-class TestConfigAdapter(ConfigPort):
+class FakeConfigAdapter(ConfigPort):
     def read_user_config(self) -> UserConfig:
         pass
 
@@ -42,7 +42,7 @@ class TestConfigAdapter(ConfigPort):
         pass
 
 
-class TestJWTAdapter(JWTPort):
+class FakeJWTAdapter(JWTPort):
     def sign(self, cmd: JWTSignCmd) -> str:
         pass
 
