@@ -41,7 +41,7 @@ def check_username(config: UserConfig, engine: Engine, username: str) -> None:
                                           f" (character blacklist: '{config.username_char_bl}')")
 
     with Session(engine) as session:
-        _query = session.query(UserEntity).filter(UserEntity.username == username)
+        _query = session.query(UserEntity).filter_by(username=username)
         if len(list(_query)):
             logging.error(f"Chosen username is busy: username={username}")
             raise UsernameSyntaxError(_desc=f"Username {username} is busy")

@@ -63,3 +63,14 @@ def test_decode_expired_jwt():
     with pytest.raises(JWTDecodeError):
         sleep(3)
         _port.decode(_cmd)
+
+
+def test_invalid_jwt():
+    # given
+    config = JWTConfig("HS512", 10, "test")
+    port = JWTAdapter(config)
+    cmd = JWTDecodeCmd("hello")
+
+    # when & then
+    with pytest.raises(JWTDecodeError):
+        port.decode(cmd)

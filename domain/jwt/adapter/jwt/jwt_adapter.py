@@ -2,7 +2,7 @@ import logging
 import time
 
 import jwt
-from jwt import InvalidSignatureError, ExpiredSignatureError
+from jwt import InvalidSignatureError, ExpiredSignatureError, DecodeError
 
 from domain.config.model.JWTConfig import JWTConfig
 from domain.jwt.exceptions import JWTDecodeError
@@ -48,3 +48,6 @@ class JWTAdapter(JWTPort):
         except ExpiredSignatureError:
             logging.error(f"JWT signature has expired: {cmd}")
             raise JWTDecodeError(f"JWT has expired")
+        except DecodeError:
+            logging.error(f"Invalid JWT syntax: {cmd}")
+            raise JWTDecodeError("Invalid JWT syntax")

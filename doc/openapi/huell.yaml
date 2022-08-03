@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Huell
-  description: Huell (the auth API) docs
+  description: Ultimate Guard
   version: '1.0'
 paths:
   /api/v1/login:
@@ -25,7 +25,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLoginResponse'
         '400':
-          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          description: Request rejected due to bad syntax / wrong variable type / wrong headers
           content:
             application/json:
               schema:
@@ -115,7 +115,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserCreateResponse'
         '400':
-          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          description: Request rejected due to bad syntax / wrong variable type / wrong headers
           content:
             application/json:
               schema:
@@ -143,14 +143,6 @@ paths:
           schema:
             type: string
           style: simple
-        - name: Authorization
-          in: header
-          description: JWT token of specific user
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
-          required: true
-          schema:
-            type: string
-          style: simple
     delete:
       summary: Delete user
       description: This endpoint deletes user and it's data
@@ -160,7 +152,7 @@ paths:
         '204':
           description: User deleted, no further information
         '400':
-          description: Request rejected due to wrong Content-Type or Accept headers
+          description: Request rejected due to wrong headers
           content:
             application/json:
               schema:
@@ -211,7 +203,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '400':
-          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          description: Request rejected due to bad syntax / wrong variable type / wrong headers
           content:
             application/json:
               schema:
@@ -326,5 +318,5 @@ components:
           type: string
           description: Details of error
       example:
-        code: CME
+        code: EXAMPLE-CME
         desc: User ate too much cookies

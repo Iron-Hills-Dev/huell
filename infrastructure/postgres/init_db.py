@@ -22,7 +22,7 @@ def init_database(config: Config) -> Engine:
     logging.info("Initializing database")
     engine = get_db_engine(config["HUELL_DB_URL"])
     logging.debug("Checking if database strcuture exists")
-    if not sqlalchemy.inspect(engine).has_table("version"):
+    if not sqlalchemy.inspect(engine).has_table("Version"):
         logging.warning("Database structure does not exist")
         create_database_structure(engine)
     else:
