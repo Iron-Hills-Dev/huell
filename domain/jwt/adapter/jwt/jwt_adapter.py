@@ -25,9 +25,9 @@ class JWTAdapter(JWTPort):
             int(time.time()),
             cmd.user_id
         )
-
         _jwt = jwt.encode(_payload.to_dict(), self.config.secret,
                           algorithm=self.config.algorithm)
+        logging.debug(f"Signed JWT: jwt={_jwt}")
         return _jwt
 
     def decode(self, cmd: JWTDecodeCmd) -> JWTPayload:
@@ -41,6 +41,7 @@ class JWTAdapter(JWTPort):
                 _payload["iat"],
                 _payload["user_id"]
             )
+            logging.debug(f"JWT decoded: {_payload}")
             return _payload
         except InvalidSignatureError:
             logging.error(f"Invalid JWT signature: {cmd}")

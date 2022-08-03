@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Huell
-  description: Ultimate Guard
+  description: All knowledge known for human race about Ultimate API Guard
   version: '1.0'
 paths:
   /api/v1/login:
@@ -9,7 +9,7 @@ paths:
       summary: Get user's auth token
       description: This endpoint gives user's auth token if given auth data is correct
       tags:
-       - Auth
+        - Auth
       requestBody:
         description: User auth data
         required: true
@@ -78,15 +78,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
       parameters:
-        - name: Authorization
-          in: header
-          description: JWT token of specific user
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
-          required: true
-          schema:
-            type: string
-          style: simple
         - name: Accept
           in: header
           description: What user accepts as result
@@ -163,6 +157,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: [ ]
       parameters:
         - name: Accept
           in: header
@@ -193,6 +189,8 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/UserPasswdChangeRequest"
+      security:
+        - bearerAuth: [ ]
       responses:
         '204':
           description: Password changed, no further information
@@ -241,6 +239,11 @@ paths:
         style: simple
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     UserCreateRequest:
       type: object
