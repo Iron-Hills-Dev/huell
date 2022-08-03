@@ -14,6 +14,11 @@ VERSION = "1.0"
 
 
 def init_database(config: Config) -> Engine:
+    """
+    Initializes database
+    :param config: app's config
+    :return: Database's engine
+    """
     logging.info("Initializing database")
     engine = get_db_engine(config["HUELL_DB_URL"])
     logging.debug("Checking if database strcuture exists")
