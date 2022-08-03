@@ -15,6 +15,8 @@ from domain.user.user_modify_port import UserModifyPort
 from domain.user.user_query_port import UserQueryPort
 
 
+# These are fake adapters only for tests' purposes.
+
 class FakeUserModifyAdapter(UserModifyPort):
     def create_user(self, cmd: UserCreateCmd) -> UUID:
         pass

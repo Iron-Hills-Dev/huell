@@ -6,6 +6,10 @@ _logging_level_env_ = "HUELL_LOGLEVEL"
 
 
 def logging_init(_config: Config):
+    """
+    Initializes logging
+    :param _config: app's config
+    """
     _loglevel = get_loglevel(_config[_logging_level_env_])
     ch = logging.StreamHandler()
     ch.setLevel(_loglevel)

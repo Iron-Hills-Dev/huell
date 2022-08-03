@@ -26,6 +26,10 @@ default_envs = {
 
 
 def import_envs(config: Config):
+    """
+    Imports all environment variables to app config
+    :param config: app's config
+    """
     logging.info("Importing environment variables")
     for k, v in environ.items():
         if k.startswith(ENV_PREFIX):
