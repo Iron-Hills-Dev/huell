@@ -14,7 +14,7 @@ _ports_ = AppPorts(_app_.config)
 
 
 @_app_.errorhandler(400)
-def bad_request():
+def bad_request(error):
     return exception_handler(BadRequest("The browser (or proxy) sent a request that this server could not understand."))
 
 

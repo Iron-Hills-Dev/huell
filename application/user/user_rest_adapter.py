@@ -9,15 +9,11 @@ from application.user.model.UserCreateRequest import UserCreateRequest
 from application.user.model.UserCreateResponse import UserCreateResponse
 from application.util.exception_utils import exception_handler
 from application.util.headers_check import headers_check
-from domain.jwt.jwt_port import JWTPort
 from domain.user.exceptions import UsernameSyntaxError, PasswordSyntaxError, UserCreateError
 from domain.user.model.UserCreateCmd import UserCreateCmd
 from domain.user.user_modify_port import UserModifyPort
-from domain.user.user_query_port import UserQueryPort
 
-jwt: JWTPort = _ports_.jwt_port
 modify: UserModifyPort = _ports_.user_modify_port
-query: UserQueryPort = _ports_.user_query_port
 
 
 @_app_.route(f"/user", methods=["POST"])

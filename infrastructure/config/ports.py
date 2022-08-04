@@ -21,7 +21,7 @@ class AppPorts:
         self.jwt_port = config_jwt_module(_config, self.config_port)
 
 
-def config_user_module(_config: Config, _config_port: ConfigPort) -> [UserModifyPort, UserQueryPort]:
+def config_user_module(_config: Config, _config_port: ConfigPort) -> tuple[UserModifyPort, UserQueryPort]:
     """
     Configures user module
     :param _config: App config (environments)
