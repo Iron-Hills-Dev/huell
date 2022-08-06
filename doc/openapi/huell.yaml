@@ -65,7 +65,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDataResponse'
+                $ref: '#/components/schemas/UserFindResponse'
         '401':
           description: User authentication rejected
           content:
@@ -286,7 +286,7 @@ components:
           description: User's JWT token
       example:
         token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
-    UserDataResponse:
+    UserFindResponse:
       type: object
       properties:
         id:

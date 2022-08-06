@@ -33,9 +33,8 @@ def config_user_module(_config: Config, _config_port: ConfigPort) -> tuple[UserM
         case "DATABASE":
             logging.info("Chosen user ports configuration: DATABASE")
             _engine_ = init_database(_config)
-            _query = DatabaseUserQueryAdapter(_engine_)
             _user_config = _config_port.read_user_config()
-            return DatabaseUserModifyAdapter(_engine_, _user_config, _query), _query
+            return DatabaseUserModifyAdapter(_engine_, _user_config), DatabaseUserQueryAdapter(_engine_)
         case "TEST":
             logging.warning("Chosen user ports configuration: TEST - will not work")
             return fake.FakeUserModifyAdapter(), fake.FakeUserQueryAdapter()

@@ -10,5 +10,5 @@ class UserCreateResponse:
     def __str__(self):
         return to_string(self)
 
-    def to_dict(self):
+    def to_json(self):
         return {"userID": str(self.user_id)}

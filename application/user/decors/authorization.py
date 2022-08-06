@@ -1,3 +1,4 @@
+import logging
 from functools import wraps
 
 from flask import request
@@ -10,14 +11,13 @@ from domain.jwt.model.JWTDecodeCmd import JWTDecodeCmd
 from domain.user.user_query_port import UserQueryPort
 
 
-def authorization(jwt: JWTPort, user_query: UserQueryPort):
+def authorization(jwt: JWTPort):
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                _jwt = str(request.authorization)
+                _jwt = request.headers["Authorization"]
                 payload = jwt.decode(JWTDecodeCmd(_jwt))
-                user_query.find_user_by_id(payload.user_id)
                 return f(payload.user_id, *args, **kwargs)
             except JWTDecodeError as e:
                 return exception_handler(e)
@@ -26,3 +26,4 @@ def authorization(jwt: JWTPort, user_query: UserQueryPort):
         return wrapper
 
     return decorator
+
