@@ -41,6 +41,7 @@ def create_user():
 
 @_app_.route("/user", methods=["GET"])
 @authorization(jwt)
+@headers_check({"Accept": "application/json"})
 def find_user(user_id):
     try:
         logging.info(f"Processing find user request: user_id={user_id}")

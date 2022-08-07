@@ -3,7 +3,6 @@ from unittest import mock
 from uuid import UUID
 
 import pytest
-from argon2 import PasswordHasher
 
 from application.exceptions import WrongHeaderError
 from domain.user.exceptions import UsernameSyntaxError, PasswordSyntaxError, UserCreateError
@@ -12,8 +11,8 @@ from domain.user.exceptions import UsernameSyntaxError, PasswordSyntaxError, Use
 @mock.patch("application.user.user_rest_adapter.modify.create_user")
 def test_create_user_should_create(create_user_mock, client):
     # given
-    user_id = "a20d7a48-7235-489b-8552-5a081d069078"
-    create_user_mock.return_value = UUID(user_id)
+    _id = UUID("a20d7a48-7235-489b-8552-5a081d069078")
+    create_user_mock.return_value = _id
 
     # when
     response = client.post("/user", headers={"Accept": "application/json", "Content-Type": "application/json"},
@@ -23,7 +22,8 @@ def test_create_user_should_create(create_user_mock, client):
     args = create_user_mock.call_args.args
     assert args[0].username == "GALJO"
     assert args[0].password == "qwerty123"
-    assert response.json["userID"] == user_id
+    assert UUID(response.json["userID"]) == _id
+    assert len(response.json) == 1
 
 
 @pytest.mark.parametrize(
@@ -58,15 +58,15 @@ def test_create_user_invalid_headers(test_input, client):
 
 @mock.patch("application.user.user_rest_adapter.modify.create_user")
 @pytest.mark.parametrize(
-    "error,excepted",
+    "error",
     [
-        (UsernameSyntaxError("test"), [UsernameSyntaxError("").code, UsernameSyntaxError("").html_code]),
-        (PasswordSyntaxError("test"), [PasswordSyntaxError("").code, UsernameSyntaxError("").html_code]),
-        (UserCreateError("test"), [UserCreateError("").code, UsernameSyntaxError("").html_code])
+        UsernameSyntaxError("test"),
+        PasswordSyntaxError("test"),
+        UserCreateError("test"),
     ]
 )
-def test_create_user_username_error_handling(create_user_mock, error, excepted, client):
-    logging.info(f"Test is parametrised: error={error}, excepted={excepted}")
+def test_create_user_username_error_handling(create_user_mock, error, client):
+    logging.info(f"Test is parametrised: error={error}")
     # given
     create_user_mock.return_value = "a20d7a48-7235-489b-8552-5a081d069078"
     create_user_mock.side_effect = error
@@ -76,6 +76,6 @@ def test_create_user_username_error_handling(create_user_mock, error, excepted, 
                            json={"username": "GALJO", "password": "qwerty123"})
 
     # then
-    assert response.json["desc"] == "test"
-    assert response.json["code"] == excepted[0]
-    assert response.status_code == excepted[1]
+    assert response.json["desc"] == error.desc
+    assert response.json["code"] == error.code
+    assert response.status_code == error.html_code
