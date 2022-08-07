@@ -4,11 +4,11 @@ from uuid import UUID
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from infrastructure.postgres.user.utils.user_utils import entity_to_user, get_user_entity
 from domain.user.exceptions import UserNotFound
 from domain.user.model.User import User
 from domain.user.user_query_port import UserQueryPort
 from infrastructure.postgres.model.UserEntity import UserEntity
+from infrastructure.postgres.user.utils.user_utils import entity_to_user, get_user_entity
 
 
 class DatabaseUserQueryAdapter(UserQueryPort):

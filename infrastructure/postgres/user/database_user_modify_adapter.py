@@ -46,10 +46,10 @@ class DatabaseUserModifyAdapter(UserModifyPort):
                 user_entity = get_user_entity(session, cmd.id)
                 session.delete(user_entity)
                 session.commit()
-        except UserNotFound:
-            raise UserDeleteError("User cannot be deleted - user does not exist")
-        except Exception as _e:
-            logging.error(f"Transaction failed during user deletion: exception={_e}")
+        except UserNotFound as e:
+            raise e
+        except Exception as e:
+            logging.error(f"Transaction failed during user deletion: exception={e}")
             raise UserDeleteError("User cannot be deleted")
         logging.debug(f"User was deleted successfully")
 
@@ -63,11 +63,11 @@ class DatabaseUserModifyAdapter(UserModifyPort):
                 user_entity.password = ph.hash(cmd.new_password)
                 session.commit()
             logging.debug(f"Password was successfully changed")
-        except UserNotFound:
-            raise ChangePasswordError("User cannot be deleted - user does not exist")
+        except UserNotFound as e:
+            raise e
         except VerifyMismatchError:
             logging.error("Old password is incorrect")
             raise ChangePasswordError("Incorrect password")
-        except Exception as _e:
-            logging.error(f"Transaction failed during password change: exception={_e}")
+        except Exception as e:
+            logging.error(f"Transaction failed during password change: exception={e}")
             raise ChangePasswordError("Password cannot be changed")
