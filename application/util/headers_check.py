@@ -4,7 +4,7 @@ from functools import wraps
 from flask import request
 
 from application.exceptions import WrongHeaderError
-from application.util.exception_utils import exception_handler
+from application.util.exception_utils import handle_exception
 
 
 def headers_check(valid_headers: dict):
@@ -20,12 +20,12 @@ def headers_check(valid_headers: dict):
                     if valid_headers[header] != headers[header]:
                         if valid_headers[header] is not None:
                             logging.error(f"Wrong header: {header}={headers[header]}")
-                            return exception_handler(WrongHeaderError(
+                            return handle_exception(WrongHeaderError(
                                 f"Wrong {header} header ({headers[header]} vs {valid_headers[header]})"))
                 return f(*args, **kwargs)
             except KeyError:
                 logging.error(f"Missing header: {header}")
-                return exception_handler(WrongHeaderError(f"Missing header: {header}"))
+                return handle_exception(WrongHeaderError(f"Missing header: {header}"))
 
         return wrapper
 

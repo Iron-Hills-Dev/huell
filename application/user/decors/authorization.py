@@ -1,9 +1,10 @@
+import logging
 from functools import wraps
 
 from flask import request
 
 from application.user.exceptions import NoAuthorizationError
-from application.util.exception_utils import exception_handler
+from application.util.exception_utils import handle_exception
 from domain.jwt.exceptions import JWTDecodeError
 from domain.jwt.jwt_port import JWTPort
 from domain.jwt.model.JWTDecodeCmd import JWTDecodeCmd
@@ -15,12 +16,14 @@ def authorization(jwt: JWTPort):
         def wrapper(*args, **kwargs):
             try:
                 _jwt = request.headers["Authorization"]
+                logging.debug(f"Authorizing user: token={_jwt}")
                 payload = jwt.decode(JWTDecodeCmd(_jwt))
+                logging.debug(f"Authorized user: id={payload.user_id}")
                 return f(payload.user_id, *args, **kwargs)
             except JWTDecodeError as e:
-                return exception_handler(e)
+                return handle_exception(e)
             except KeyError:
-                return exception_handler(NoAuthorizationError("Missing authorization token"))
+                return handle_exception(NoAuthorizationError("Missing authorization token"))
 
         return wrapper
 

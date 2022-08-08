@@ -9,7 +9,7 @@ from application.user.decors.authorization import authorization
 from application.user.model.UserCreateRequest import UserCreateRequest
 from application.user.model.UserCreateResponse import UserCreateResponse
 from application.user.model.UserFindResponse import UserFindResponse
-from application.util.exception_utils import exception_handler
+from application.util.exception_utils import handle_exception
 from application.util.headers_check import headers_check
 from domain.jwt.jwt_port import JWTPort
 from domain.user.exceptions import UsernameSyntaxError, PasswordSyntaxError, UserCreateError, UserNotFound, \
@@ -38,7 +38,7 @@ def create_user():
         logging.info(f"Request processed successfully: {response}")
         return response.to_json(), 201
     except (InvalidVariableType, UsernameSyntaxError, PasswordSyntaxError, UserCreateError) as e:
-        return exception_handler(e)
+        return handle_exception(e)
 
 
 @_app_.route("/user", methods=["GET"])
@@ -52,7 +52,7 @@ def find_user(user_id):
         logging.info(f"Request processed successfully: {response}")
         return response.to_json(), 200
     except UserNotFound as e:
-        return exception_handler(e)
+        return handle_exception(e)
 
 
 @_app_.route("/user", methods=["DELETE"])
@@ -66,4 +66,4 @@ def delete_user(user_id):
         logging.info("Request processed successfully")
         return "", 204
     except (UserNotFound, UserDeleteError) as e:
-        return exception_handler(e)
+        return handle_exception(e)

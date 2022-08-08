@@ -8,5 +8,5 @@ from domain.jwt.model.JWTSignCmd import JWTSignCmd
 
 def test_generate_token():
     jwt = JWTAdapter(JWTConfig("HS512", 1800, "DOCKERIZEDhuell"))
-    user_id = UUID("1b042c8f-a3a1-4e1f-a8a2-a8e5ebf276e9")
+    user_id = UUID("6ca32e25-dd54-41f5-8cc1-68e6560ddfcf")
     logging.critical(jwt.sign(JWTSignCmd(user_id)))
