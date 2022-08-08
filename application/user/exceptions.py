@@ -1,4 +1,4 @@
-_EXCEPTION_PREFIX_ = "USERAPP-"
+_EXCEPTION_PREFIX_ = "USERAPP."
 
 
 class NoAuthorizationError(Exception):

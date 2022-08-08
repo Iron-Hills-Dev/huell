@@ -72,12 +72,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USERAPP.NAE"
+                desc: "Missing authorization token"
         '400':
-          description: Request rejected due to wrong Content-Type or Accept headers
+          description: Request rejected due to wrong headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "APP.WHE"
+                desc: "Missing header: Accept"
+        '404':
+          description: Given user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UNF"
+                desc: "User with ID be964b8c-59cf-4549-9f25-eb6bb63824ec does not exist"
       security:
         - bearerAuth: [ ]
       parameters:
@@ -114,12 +129,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "APP.BR"
+                desc: "The browser (or proxy) sent a request that this server could not understand."
         '406':
           description: Request rejected due to wrong content
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.PSE"
+                desc: "Password is too long (max 25)"
       parameters:
         - name: Accept
           in: header
@@ -151,12 +172,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.WHE"
+                desc: "Wrong Accept header (application/javascript vs application/json)"
         '401':
           description: User authentication rejected
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "JWT.DE"
+                desc: "JWT has expired"
+        '404':
+          description: Given user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UNF"
+                desc: "User with ID be964b8c-59cf-4549-9f25-eb6bb63824ec does not exist"
       security:
         - bearerAuth: [ ]
       parameters:
@@ -208,6 +244,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '406':
           description: Request rejected due to wrong content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Given user does not exist
           content:
             application/json:
               schema:

@@ -30,17 +30,3 @@ def headers_check(valid_headers: dict):
         return wrapper
 
     return decorator
-
-# def headers_check(valid_headers: dict, headers: dict):
-#     logging.debug("Checking headers")
-#     header = None
-#     try:
-#         for header in valid_headers.keys():
-#             logging.debug(f"Header to check: {header}")
-#             if valid_headers[header] != headers[header]:
-#                 if valid_headers[header] is not None:
-#                     logging.error(f"Wrong header: {header}={headers[header]}")
-#                     raise WrongHeaderError(f"Wrong {header} header ({headers[header]} vs {valid_headers[header]})")
-#     except KeyError:
-#         logging.error(f"Missing header: {header}")
-#         raise WrongHeaderError(f"Missing header: {header}")
