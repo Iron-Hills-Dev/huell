@@ -2,6 +2,9 @@ openapi: 3.0.3
 info:
   title: Huell
   description: All knowledge known for human race about Ultimate API Guard
+  servers:
+    - url: http://localhost:5080
+      description: local development environment
   version: '1.0'
 paths:
   /api/v1/login:
@@ -251,7 +254,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserPasswdChangeRequest"
+              $ref: "#/components/schemas/UserPasswordChangeRequest"
       security:
         - bearerAuth: [ ]
       responses:
@@ -303,14 +306,6 @@ paths:
         in: header
         description: What type user sends in request
         example: application/json
-        required: true
-        schema:
-          type: string
-        style: simple
-      - name: Authorization
-        in: header
-        description: JWT token of specific user
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
         required: true
         schema:
           type: string

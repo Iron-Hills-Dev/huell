@@ -36,7 +36,7 @@ def authorization(jwt: JWTPort):
 
 def extract_token(header: str) -> str:
     if header.startswith("Bearer "):
-        token = header[6:]
+        token = header[7:]
         logging.debug(f"Token extracted: token={token}")
         return token
     else:
