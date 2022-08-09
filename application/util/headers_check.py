@@ -23,7 +23,9 @@ def headers_check(valid_headers: dict):
                             return handle_exception(WrongHeaderError(
                                 f"Wrong {header} header ({headers[header]} vs {valid_headers[header]})"))
                 return f(*args, **kwargs)
-            except KeyError:
+            except KeyError as e:
+                if e.args[0] != header:
+                    raise e
                 logging.error(f"Missing header: {header}")
                 return handle_exception(WrongHeaderError(f"Missing header: {header}"))
 

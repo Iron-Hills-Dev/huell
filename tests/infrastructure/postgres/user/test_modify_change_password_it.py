@@ -4,11 +4,11 @@ import pytest
 from argon2 import PasswordHasher
 
 from domain.config.model.UserConfig import UserConfig
-from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
-from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
-from domain.user.exceptions import PasswordSyntaxError, ChangePasswordError, UserNotFound
+from domain.user.exceptions import PasswordSyntaxError, UserNotFound, IncorrectPassword
 from domain.user.model.ChangePasswordCmd import ChangePasswordCmd
 from domain.user.model.UserCreateCmd import UserCreateCmd
+from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
+from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
 from tests.decors import using_database
 
 
@@ -43,7 +43,7 @@ def test_change_password_wrong_old_password(db_engine, user_config):
     _cmd = ChangePasswordCmd(_id, "hihihaha!", "asdfghjkl")
 
     # when & then
-    with pytest.raises(ChangePasswordError):
+    with pytest.raises(IncorrectPassword):
         modify.change_password(_cmd)
 
 

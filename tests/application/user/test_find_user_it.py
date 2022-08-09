@@ -1,19 +1,21 @@
+import logging
 from unittest import mock
 from uuid import UUID
 
+import pytest
 from argon2 import PasswordHasher
 
 from application.exceptions import WrongHeaderError
 from application.user.exceptions import NoAuthorizationError
 from domain.jwt.exceptions import JWTDecodeError
 from domain.jwt.model.JWTPayload import JWTPayload
-from domain.user.exceptions import UserNotFound
+from domain.user.exceptions import UserNotFound, UserFindError
 from domain.user.model.User import User
 
 
 @mock.patch("application.user.user_rest_adapter.query.find_user_by_id")
 @mock.patch("application.user.user_rest_adapter.jwt.decode")
-def test_create_user_should_create(decode_mock, find_user_mock, client):
+def test_find_user_should_create(decode_mock, find_user_mock, client):
     # given
     ph = PasswordHasher()
     find_user_mock.return_value = User(UUID("a9fbc059-19d8-493e-aeeb-4debeed6326d"), "GALJO", ph.hash("qwerty123"))
@@ -32,7 +34,7 @@ def test_create_user_should_create(decode_mock, find_user_mock, client):
 
 @mock.patch("application.user.user_rest_adapter.query.find_user_by_id")
 @mock.patch("application.user.user_rest_adapter.jwt.decode")
-def test_create_user_wrong_header(decode_mock, find_user_mock, client):
+def test_find_user_wrong_header(decode_mock, find_user_mock, client):
     # given
     ph = PasswordHasher()
     find_user_mock.return_value = User(UUID("a9fbc059-19d8-493e-aeeb-4debeed6326d"), "GALJO", ph.hash("qwerty123"))
@@ -43,12 +45,13 @@ def test_create_user_wrong_header(decode_mock, find_user_mock, client):
     response = client.get("/user", headers={"Accept": "plain/text", "Authorization": "test"})
 
     # then
+    logging.critical(response.json)
     assert response.status_code == error.html_code
     assert response.json["code"] == error.code
 
 
 @mock.patch("application.user.user_rest_adapter.jwt.decode")
-def test_create_user_wrong_authorization(decode_mock, client):
+def test_find_user_wrong_authorization(decode_mock, client):
     # given
     error = JWTDecodeError("test")
     decode_mock.side_effect = error
@@ -62,7 +65,7 @@ def test_create_user_wrong_authorization(decode_mock, client):
     assert response.json["code"] == error.code
 
 
-def test_create_user_no_authorization(client):
+def test_find_user_no_authorization(client):
     # given
     error = NoAuthorizationError("test")
 
@@ -76,9 +79,15 @@ def test_create_user_no_authorization(client):
 
 @mock.patch("application.user.user_rest_adapter.query.find_user_by_id")
 @mock.patch("application.user.user_rest_adapter.jwt.decode")
-def test_create_user_error_handling(decode_mock, find_user_mock, client):
+@pytest.mark.parametrize(
+    "error",
+    [
+        UserNotFound("test"),
+        UserFindError("test")
+    ]
+)
+def test_find_user_error_handling(decode_mock, find_user_mock, client, error):
     # given
-    error = UserNotFound("test")
     ph = PasswordHasher()
     find_user_mock.return_value = User(UUID("a9fbc059-19d8-493e-aeeb-4debeed6326d"), "GALJO", ph.hash("qwerty123"))
     find_user_mock.side_effect = error

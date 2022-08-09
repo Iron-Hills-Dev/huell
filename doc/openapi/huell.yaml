@@ -93,6 +93,15 @@ paths:
               example:
                 code: "USER.UNF"
                 desc: "User with ID be964b8c-59cf-4549-9f25-eb6bb63824ec does not exist"
+        '503':
+          description: User could not be found due to unknown reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UCE"
+                desc: "User could not be found - no further information"
       security:
         - bearerAuth: [ ]
       parameters:
@@ -141,6 +150,15 @@ paths:
               example:
                 code: "USER.PSE"
                 desc: "Password is too long (max 25)"
+        '503':
+          description: User could not be created due to unknown reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UCE"
+                desc: "User could not be created - no further information"
       parameters:
         - name: Accept
           in: header
@@ -193,6 +211,15 @@ paths:
               example:
                 code: "USER.UNF"
                 desc: "User with ID be964b8c-59cf-4549-9f25-eb6bb63824ec does not exist"
+        '503':
+          description: User could not be deleted due to unknown reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UDE"
+                desc: "User could not be deleted - no further information"
       security:
         - bearerAuth: [ ]
       parameters:
@@ -254,6 +281,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Password could not be changed due to unknown reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UDE"
+                desc: "Password could not be changed - no further information"
     parameters:
       - name: Accept
         in: header
@@ -363,5 +399,5 @@ components:
           type: string
           description: Details of error
       example:
-        code: EXAMPLE-CME
+        code: EXAMPLE.CME
         desc: User ate too much cookies

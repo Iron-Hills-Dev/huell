@@ -31,7 +31,6 @@ def test_create_user_should_create(create_user_mock, client):
     [([1, "qwerty123"]), (["GALJO", 1])]
 )
 def test_create_user_invalid_variable_type(test_input, client):
-    logging.info(f"Test is parametrised: test_input={test_input}")
     # when
     response = client.post("/user", headers={"Accept": "application/json", "Content-Type": "application/json"},
                            json={"username": test_input[0], "password": test_input[1]})
@@ -46,7 +45,6 @@ def test_create_user_invalid_variable_type(test_input, client):
     [(["plain/text", "application/json"]), (["application/json", "plain/text"])]
 )
 def test_create_user_invalid_headers(test_input, client):
-    logging.info(f"Test is parametrised: test_input={test_input}")
     # when
     response = client.post("/user", headers={"Accept": test_input[0], "Content-Type": test_input[1]},
                            json={"username": "GALJO", "password": "qwerty123"})
@@ -66,7 +64,6 @@ def test_create_user_invalid_headers(test_input, client):
     ]
 )
 def test_create_user_username_error_handling(create_user_mock, error, client):
-    logging.info(f"Test is parametrised: error={error}")
     # given
     create_user_mock.return_value = "a20d7a48-7235-489b-8552-5a081d069078"
     create_user_mock.side_effect = error

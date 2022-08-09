@@ -22,7 +22,9 @@ def authorization(jwt: JWTPort):
                 return f(payload.user_id, *args, **kwargs)
             except JWTDecodeError as e:
                 return handle_exception(e)
-            except KeyError:
+            except KeyError as e:
+                if e.args[0] != "HTTP_AUTHORIZATION":
+                    raise e
                 return handle_exception(NoAuthorizationError("Missing authorization token"))
 
         return wrapper

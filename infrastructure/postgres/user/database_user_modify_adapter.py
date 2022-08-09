@@ -7,7 +7,8 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from domain.config.model.UserConfig import UserConfig
-from domain.user.exceptions import UserNotFound, UserCreateError, UserDeleteError, ChangePasswordError
+from domain.user.exceptions import UserNotFound, UserCreateError, UserDeleteError, ChangePasswordError, \
+    IncorrectPassword
 from domain.user.model.ChangePasswordCmd import ChangePasswordCmd
 from domain.user.model.User import User
 from domain.user.model.UserCreateCmd import UserCreateCmd
@@ -35,7 +36,7 @@ class DatabaseUserModifyAdapter(UserModifyPort):
                 session.commit()
         except Exception as _e:
             logging.error(f"Transaction failed during user creation: exception={_e}")
-            raise UserCreateError("User cannot be created")
+            raise UserCreateError("User could not be created: no further information")
         logging.debug(f"User was created successfully: {user}")
         return user.id
 
@@ -50,7 +51,7 @@ class DatabaseUserModifyAdapter(UserModifyPort):
             raise e
         except Exception as e:
             logging.error(f"Transaction failed during user deletion: exception={e}")
-            raise UserDeleteError("User cannot be deleted")
+            raise UserDeleteError("User could not be deleted: no further information")
         logging.debug(f"User was deleted successfully")
 
     def change_password(self, cmd: ChangePasswordCmd) -> None:
@@ -59,15 +60,15 @@ class DatabaseUserModifyAdapter(UserModifyPort):
         try:
             with Session(self.engine) as session:
                 user_entity = get_user_entity(session, cmd.user_id)
-                ph.verify(user_entity.password, cmd.old_password)
+                ph.verify(user_entity.password, cmd.current_password)
                 user_entity.password = ph.hash(cmd.new_password)
                 session.commit()
             logging.debug(f"Password was successfully changed")
         except UserNotFound as e:
             raise e
         except VerifyMismatchError:
-            logging.error("Old password is incorrect")
-            raise ChangePasswordError("Incorrect password")
+            logging.error("Current password is incorrect")
+            raise IncorrectPassword("Incorrect password")
         except Exception as e:
             logging.error(f"Transaction failed during password change: exception={e}")
-            raise ChangePasswordError("Password cannot be changed")
+            raise ChangePasswordError("Password could not be changed: no further information")

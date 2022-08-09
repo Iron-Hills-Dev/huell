@@ -83,7 +83,6 @@ def test_create_user_no_authorization(decode_mock, delete_user_mock, client):
     ]
 )
 def test_create_user_error_handling(decode_mock, delete_user_mock, client, error):
-    logging.info(f"Test is parametrized: error={error}")
     # given
     delete_user_mock.return_value = None
     delete_user_mock.side_effect = error
