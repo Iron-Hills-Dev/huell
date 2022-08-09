@@ -79,9 +79,9 @@ def change_password(user_id):
         logging.info(f"Processing change user password request: user_id={user_id}")
         body = request.get_json()
         body = UserChangePasswordRequest(body["currentPassword"], body["newPassword"])
-        cmd = ChangePasswordCmd(user_id, body.curr_password, body.new_password)
+        cmd = ChangePasswordCmd(user_id, body.current_password, body.new_password)
         modify.change_password(cmd)
         logging.info("Request processed successfully")
         return "", 204
-    except (UserNotFound, ChangePasswordError, IncorrectPassword) as e:
+    except (UserNotFound, ChangePasswordError, IncorrectPassword, InvalidVariableType) as e:
         return handle_exception(e)

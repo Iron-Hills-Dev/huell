@@ -377,7 +377,7 @@ components:
       example:
         userID: 08b499e5-2fad-49d9-8f8a-fd440f9d248f
         username: GALJO
-    UserPasswdChangeRequest:
+    UserPasswordChangeRequest:
       type: object
       properties:
         currentPasswd:
@@ -387,8 +387,8 @@ components:
           type: string
           description: User's new password
       example:
-        currentPasswd: qwerty1234
-        newPasswd: qwertyuiop!
+        currentPassword: qwerty1234
+        newPassword: qwertyuiop!
     ErrorResponse:
       type: object
       properties:

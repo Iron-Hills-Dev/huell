@@ -11,3 +11,6 @@ class UserCreateRequest:
 
     def __str__(self):
         return to_string(self, ["password"])
+
+    def to_json(self):
+        return self.__dict__
