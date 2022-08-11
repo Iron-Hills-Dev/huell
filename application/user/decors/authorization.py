@@ -16,7 +16,7 @@ def authorization(jwt: JWTPort):
         def wrapper(*args, **kwargs):
             try:
                 header = request.headers["Authorization"]
-                logging.debug(f"Authorizing request: header={header}")
+                logging.debug(f"Authorizing user: header={header}")
                 token = extract_token(header)
                 payload = jwt.decode(JWTDecodeCmd(token))
                 logging.debug(f"Authorized user: id={payload.user_id}")

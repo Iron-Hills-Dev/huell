@@ -31,7 +31,8 @@ jwt: JWTPort = _ports_.jwt_port
 def create_user():
     try:
         logging.info(f"Processing create user request: {request}")
-        body = UserCreateRequest(request.get_json())
+        body = request.get_json()
+        body = UserCreateRequest(body["username"], body["password"])
         logging.debug(f"Request body: {body}")
         cmd = UserCreateCmd(body.username, body.password)
         user_id = modify.create_user(cmd)
@@ -76,7 +77,8 @@ def delete_user(user_id):
 def change_password(user_id):
     try:
         logging.info(f"Processing change user password request: user_id={user_id}")
-        body = UserChangePasswordRequest(request.get_json())
+        body = request.get_json()
+        body = UserChangePasswordRequest(body["currentPassword"], body["newPassword"])
         cmd = ChangePasswordCmd(user_id, body.current_password, body.new_password)
         modify.change_password(cmd)
         logging.info("Request processed successfully")
