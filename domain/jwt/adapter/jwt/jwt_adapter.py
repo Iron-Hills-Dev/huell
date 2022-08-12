@@ -25,7 +25,6 @@ class JWTAdapter(JWTPort):
             int(time.time()),
             cmd.user_id
         )
-
         _jwt = jwt.encode(_payload.to_dict(), self.config.secret,
                           algorithm=self.config.algorithm)
         return _jwt
