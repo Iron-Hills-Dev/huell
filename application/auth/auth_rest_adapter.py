@@ -27,16 +27,16 @@ def login():
         logging.info(f"Processing login request: {request}")
         body = request.get_json()
         body = UserLoginRequest(body["username"], body["password"])
-        logging.info(f"Request: {body}")
+        logging.info(f"Request content: {body}")
         user = user_query.find_user_by_username(body.username)
         ph.verify(user.password, body.password)
         cmd = JWTSignCmd(user.id)
         token = jwt.sign(cmd)
         response = UserLoginResponse(token)
-        logging.info(f"Login request processed successfully: {response}")
+        logging.info(f"Login request processed successfully")
         return response.to_json(), 200
-    except VerifyMismatchError():
+    except VerifyMismatchError:
         logging.error("Incorrect passoword")
-        handle_exception(AuthError("Incorrect password"))
+        return handle_exception(AuthError("Incorrect password"))
     except UserNotFound:
-        handle_exception(AuthError("Incorrect username"))
+        return handle_exception(AuthError("Incorrect username"))

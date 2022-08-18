@@ -1,5 +1,4 @@
 from application.util.variable_type_check import is_instance
-from domain.util.dto_utils import to_string
 
 
 class UserLoginResponse:
@@ -9,6 +8,3 @@ class UserLoginResponse:
 
     def to_json(self):
         return self.__dict__
-
-    def __str__(self):
-        return to_string(self)
