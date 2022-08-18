@@ -71,7 +71,7 @@ def test_login_wrong_headers(client, headers):
 @pytest.mark.parametrize(
     "error,excepted",
     [
-        (UserNotFound("test"), AuthError("Incorrect username"))
+        (UserNotFound("test"), AuthError("Incorrect username or password"))
     ]
 )
 def test_login_error_handling_find_user(find_user_mock, sign_mock, client, error, excepted):
@@ -117,7 +117,7 @@ def test_login_wrong_password(find_user_mock, sign_mock, client):
     "yNC01ZmMxLTQ1MmMtYWVhYS04MGNmNzk4ZTk5YzgifQ"
     ".4E1GXuTIOVYECPG8oj1bhiQ69TC3xaO31Yfer_NI8ljiH9gTt2MzC9rpLfM-trgPVmVDx0scpPYejox3EWopag"
 
-    error = AuthError("Incorrect password")
+    error = AuthError("Incorrect username or password")
 
     find_user_mock.return_value = user
     sign_mock.return_value = jwt
