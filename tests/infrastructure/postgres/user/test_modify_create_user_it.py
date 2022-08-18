@@ -11,11 +11,11 @@ from tests.decors import using_database
 
 @using_database
 def test_create_user_should_create(db_engine, user_config):
+    # given
     query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
     ph = PasswordHasher()
 
-    # given
     _cmd = UserCreateCmd("GALJO", "qwerty!")
 
     # when
@@ -30,10 +30,9 @@ def test_create_user_should_create(db_engine, user_config):
 
 @using_database
 def test_create_user_too_short_username(db_engine, user_config):
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GAL", "qwerty!")
 
     # when & then
@@ -43,10 +42,9 @@ def test_create_user_too_short_username(db_engine, user_config):
 
 @using_database
 def test_create_user_too_long_username(db_engine, user_config):
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GALJOGALJOGALJOOO", "qwerty!")
 
     # when & then
@@ -56,10 +54,9 @@ def test_create_user_too_long_username(db_engine, user_config):
 
 @using_database
 def test_create_user_busy_username(db_engine, user_config):
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GALJO", "qwerty!")
 
     # when & then
@@ -70,10 +67,9 @@ def test_create_user_busy_username(db_engine, user_config):
 
 @using_database
 def test_create_user_too_short_passwd(db_engine, user_config):
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GALJO", "qwerty")
 
     # when & then
@@ -83,10 +79,9 @@ def test_create_user_too_short_passwd(db_engine, user_config):
 
 @using_database
 def test_create_user_too_long_passwd(db_engine, user_config):
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GALJO", "qwertyuiopqwertyuiopqwerty")
 
     # when & then
@@ -96,11 +91,10 @@ def test_create_user_too_long_passwd(db_engine, user_config):
 
 @using_database
 def test_create_user_used_illegal_char_in_passwd_wl(db_engine):
-    user_config = UserConfig(passwd_char_wl="abc")
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    user_config = UserConfig(passwd_char_wl="abc")
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GALJO", "abc!cba")
 
     # when & then
@@ -110,11 +104,10 @@ def test_create_user_used_illegal_char_in_passwd_wl(db_engine):
 
 @using_database
 def test_create_user_used_illegal_char_in_passwd_bl(db_engine):
-    user_config = UserConfig(passwd_char_bl="/Jx")
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    user_config = UserConfig(passwd_char_bl="/Jx")
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GALJO", "abcdefghiJkl")
 
     # when & then
@@ -124,11 +117,10 @@ def test_create_user_used_illegal_char_in_passwd_bl(db_engine):
 
 @using_database
 def test_create_user_used_illegal_char_in_username_wl(db_engine):
-    user_config = UserConfig(username_char_wl="abc")
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    user_config = UserConfig(username_char_wl="abc")
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GALJO", "abc_abc")
 
     # when & then
@@ -138,11 +130,10 @@ def test_create_user_used_illegal_char_in_username_wl(db_engine):
 
 @using_database
 def test_create_user_used_illegal_char_in_username_bl(db_engine):
-    user_config = UserConfig(username_char_bl="y#l")
-    query = DatabaseUserQueryAdapter(db_engine)
-    modify = DatabaseUserModifyAdapter(db_engine, user_config, query)
-
     # given
+    user_config = UserConfig(username_char_bl="y#l")
+    modify = DatabaseUserModifyAdapter(db_engine, user_config)
+
     _cmd = UserCreateCmd("GAL#JO", "qwerty!")
 
     # when & then

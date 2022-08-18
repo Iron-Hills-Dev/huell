@@ -7,24 +7,23 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from domain.config.model.UserConfig import UserConfig
-from infrastructure.postgres.user.utils.user_check_utils import check_user, check_password
-from infrastructure.postgres.user.utils.user_utils import user_to_entity, get_user_entity
-from domain.user.exceptions import UserNotFound, UserCreateError, UserDeleteError, ChangePasswordError
+from domain.user.exceptions import UserNotFound, UserCreateError, UserDeleteError, ChangePasswordError, \
+    IncorrectPassword
 from domain.user.model.ChangePasswordCmd import ChangePasswordCmd
 from domain.user.model.User import User
 from domain.user.model.UserCreateCmd import UserCreateCmd
 from domain.user.model.UserDeleteCmd import UserDeleteCmd
 from domain.user.user_modify_port import UserModifyPort
-from domain.user.user_query_port import UserQueryPort
+from infrastructure.postgres.user.utils.user_check_utils import check_user, check_password
+from infrastructure.postgres.user.utils.user_utils import user_to_entity, get_user_entity
 
 ph = PasswordHasher()
 
 
 class DatabaseUserModifyAdapter(UserModifyPort):
-    def __init__(self, engine: Engine, config: UserConfig, user_query_port: UserQueryPort):
+    def __init__(self, engine: Engine, config: UserConfig):
         self.engine = engine
         self.config = config
-        self.query = user_query_port
 
     def create_user(self, cmd: UserCreateCmd) -> UUID:
         logging.debug(f"Creating user: {cmd}")
@@ -37,7 +36,7 @@ class DatabaseUserModifyAdapter(UserModifyPort):
                 session.commit()
         except Exception as _e:
             logging.error(f"Transaction failed during user creation: exception={_e}")
-            raise UserCreateError("User cannot be created")
+            raise UserCreateError("User could not be created: no further information")
         logging.debug(f"User was created successfully: {user}")
         return user.id
 
@@ -48,11 +47,11 @@ class DatabaseUserModifyAdapter(UserModifyPort):
                 user_entity = get_user_entity(session, cmd.id)
                 session.delete(user_entity)
                 session.commit()
-        except UserNotFound:
-            raise UserDeleteError("User cannot be deleted - user does not exist")
-        except Exception as _e:
-            logging.error(f"Transaction failed during user deletion: exception={_e}")
-            raise UserDeleteError("User cannot be deleted")
+        except UserNotFound as e:
+            raise e
+        except Exception as e:
+            logging.error(f"Transaction failed during user deletion: exception={e}")
+            raise UserDeleteError("User could not be deleted: no further information")
         logging.debug(f"User was deleted successfully")
 
     def change_password(self, cmd: ChangePasswordCmd) -> None:
@@ -61,15 +60,15 @@ class DatabaseUserModifyAdapter(UserModifyPort):
         try:
             with Session(self.engine) as session:
                 user_entity = get_user_entity(session, cmd.user_id)
-                ph.verify(user_entity.password, cmd.old_password)
+                ph.verify(user_entity.password, cmd.current_password)
                 user_entity.password = ph.hash(cmd.new_password)
                 session.commit()
             logging.debug(f"Password was successfully changed")
-        except UserNotFound:
-            raise ChangePasswordError("User cannot be deleted - user does not exist")
+        except UserNotFound as e:
+            raise e
         except VerifyMismatchError:
-            logging.error("Old password is incorrect")
-            raise ChangePasswordError("Incorrect password")
-        except Exception as _e:
-            logging.error(f"Transaction failed during password change: exception={_e}")
-            raise ChangePasswordError("Password cannot be changed")
+            logging.error("Current password is incorrect")
+            raise IncorrectPassword("Incorrect password")
+        except Exception as e:
+            logging.error(f"Transaction failed during password change: exception={e}")
+            raise ChangePasswordError("Password could not be changed: no further information")

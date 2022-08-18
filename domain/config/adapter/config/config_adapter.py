@@ -33,9 +33,9 @@ class ConfigAdapter(ConfigPort):
         try:
             logging.debug(f"Reading JWT config")
             _config = JWTConfig(
-                self.config.get(f"{JWT_CONFIG_PREFIX}SECRET"),
                 self.config.get(f"{JWT_CONFIG_PREFIX}ALGORITHM"),
-                self.config.get(f"{JWT_CONFIG_PREFIX}EXP_TIME")
+                self.config.get(f"{JWT_CONFIG_PREFIX}EXP_TIME"),
+                self.config.get(f"{JWT_CONFIG_PREFIX}SECRET")
             )
             logging.debug(f"Read JWT config: {_config}")
             return _config
