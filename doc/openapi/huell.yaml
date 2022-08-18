@@ -1,7 +1,10 @@
 openapi: 3.0.3
 info:
   title: Huell
-  description: Huell (the auth API) docs
+  description: All knowledge known for human race about Ultimate API Guard
+  servers:
+    - url: http://localhost:5080
+      description: local development environment
   version: '1.0'
 paths:
   /api/v1/login:
@@ -9,7 +12,7 @@ paths:
       summary: Get user's auth token
       description: This endpoint gives user's auth token if given auth data is correct
       tags:
-       - Auth
+        - Auth
       requestBody:
         description: User auth data
         required: true
@@ -25,7 +28,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserLoginResponse'
         '400':
-          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          description: Request rejected due to bad syntax / wrong variable type / wrong headers
           content:
             application/json:
               schema:
@@ -65,28 +68,46 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDataResponse'
+                $ref: '#/components/schemas/UserFindResponse'
         '401':
           description: User authentication rejected
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USERAPP.NAE"
+                desc: "Missing authorization token"
         '400':
-          description: Request rejected due to wrong Content-Type or Accept headers
+          description: Request rejected due to wrong headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "APP.WHE"
+                desc: "Missing header: Accept"
+        '404':
+          description: Given user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UNF"
+                desc: "User with ID be964b8c-59cf-4549-9f25-eb6bb63824ec does not exist"
+        '503':
+          description: User could not be found due to unknown reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UCE"
+                desc: "User could not be found - no further information"
+      security:
+        - bearerAuth: [ ]
       parameters:
-        - name: Authorization
-          in: header
-          description: JWT token of specific user
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
-          required: true
-          schema:
-            type: string
-          style: simple
         - name: Accept
           in: header
           description: What user accepts as result
@@ -115,17 +136,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserCreateResponse'
         '400':
-          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          description: Request rejected due to bad syntax / wrong variable type / wrong headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "APP.BR"
+                desc: "The browser (or proxy) sent a request that this server could not understand."
         '406':
           description: Request rejected due to wrong content
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.PSE"
+                desc: "Password is too long (max 25)"
+        '503':
+          description: User could not be created due to unknown reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UCE"
+                desc: "User could not be created - no further information"
       parameters:
         - name: Accept
           in: header
@@ -143,14 +179,6 @@ paths:
           schema:
             type: string
           style: simple
-        - name: Authorization
-          in: header
-          description: JWT token of specific user
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
-          required: true
-          schema:
-            type: string
-          style: simple
     delete:
       summary: Delete user
       description: This endpoint deletes user and it's data
@@ -160,17 +188,43 @@ paths:
         '204':
           description: User deleted, no further information
         '400':
-          description: Request rejected due to wrong Content-Type or Accept headers
+          description: Request rejected due to wrong headers
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.WHE"
+                desc: "Wrong Accept header (application/javascript vs application/json)"
         '401':
           description: User authentication rejected
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "JWT.DE"
+                desc: "JWT has expired"
+        '404':
+          description: Given user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UNF"
+                desc: "User with ID be964b8c-59cf-4549-9f25-eb6bb63824ec does not exist"
+        '503':
+          description: User could not be deleted due to unknown reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UDE"
+                desc: "User could not be deleted - no further information"
+      security:
+        - bearerAuth: [ ]
       parameters:
         - name: Accept
           in: header
@@ -200,7 +254,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserPasswdChangeRequest"
+              $ref: "#/components/schemas/UserPasswordChangeRequest"
+      security:
+        - bearerAuth: [ ]
       responses:
         '204':
           description: Password changed, no further information
@@ -211,7 +267,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '400':
-          description: Request rejected due to bad syntax / wrong variable type / wrong Content-Type or Accept headers
+          description: Request rejected due to bad syntax / wrong variable type / wrong headers
           content:
             application/json:
               schema:
@@ -222,6 +278,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Given user does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Password could not be changed due to unknown reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "USER.UDE"
+                desc: "Password could not be changed - no further information"
     parameters:
       - name: Accept
         in: header
@@ -239,16 +310,13 @@ paths:
         schema:
           type: string
         style: simple
-      - name: Authorization
-        in: header
-        description: JWT token of specific user
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
-        required: true
-        schema:
-          type: string
-        style: simple
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     UserCreateRequest:
       type: object
@@ -291,7 +359,7 @@ components:
           description: User's JWT token
       example:
         token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
-    UserDataResponse:
+    UserFindResponse:
       type: object
       properties:
         id:
@@ -304,7 +372,7 @@ components:
       example:
         userID: 08b499e5-2fad-49d9-8f8a-fd440f9d248f
         username: GALJO
-    UserPasswdChangeRequest:
+    UserPasswordChangeRequest:
       type: object
       properties:
         currentPasswd:
@@ -314,8 +382,8 @@ components:
           type: string
           description: User's new password
       example:
-        currentPasswd: qwerty1234
-        newPasswd: qwertyuiop!
+        currentPassword: qwerty1234
+        newPassword: qwertyuiop!
     ErrorResponse:
       type: object
       properties:
@@ -326,5 +394,5 @@ components:
           type: string
           description: Details of error
       example:
-        code: CME
+        code: EXAMPLE.CME
         desc: User ate too much cookies

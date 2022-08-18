@@ -6,6 +6,7 @@ services:
       context: ../
     container_name: huell
     environment:
+      HUELL_LOGLEVEL: DEBUG
       HUELL_JWT_SECRET: DOCKERIZEDhuell
       HUELL_DB_URL: postgresql://huell:huell@huell-postgres:5432/huell
     ports:
