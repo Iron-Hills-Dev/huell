@@ -16,7 +16,7 @@ def authorization(jwt: JWTPort):
         def wrapper(*args, **kwargs):
             try:
                 header = request.headers["Authorization"]
-                logging.debug(f"Authorizing request: header={header}")
+                logging.debug(f"Authorizing request")
                 token = extract_token(header)
                 payload = jwt.decode(JWTDecodeCmd(token))
                 logging.debug(f"Authorized user: id={payload.user_id}")
@@ -37,8 +37,8 @@ def authorization(jwt: JWTPort):
 def extract_token(header: str) -> str:
     if header.startswith("Bearer "):
         token = header[7:]
-        logging.debug(f"Token extracted: token={token}")
+        logging.debug(f"Token extracted")
         return token
     else:
-        logging.error(f"Wrong Authorization header format: header={header}")
+        logging.error(f"Wrong Authorization header format")
         raise AuthorizationHeaderError("Wrong Authorization header format (format accepted: Bearer `token`")

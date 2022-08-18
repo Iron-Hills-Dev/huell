@@ -27,11 +27,11 @@ class JWTAdapter(JWTPort):
         )
         _jwt = jwt.encode(_payload.to_dict(), self.config.secret,
                           algorithm=self.config.algorithm)
-        logging.debug(f"Signed JWT: jwt={_jwt}")
+        logging.debug(f"Signed JWT: payload={_payload}")
         return _jwt
 
     def decode(self, cmd: JWTDecodeCmd) -> JWTPayload:
-        logging.debug(f"Decoding JWT: {cmd}")
+        logging.debug(f"Decoding JWT")
         try:
             _payload = jwt.decode(cmd.jwt, self.config.secret, algorithms=self.config.algorithm)
             _payload = JWTPayload(
@@ -44,11 +44,11 @@ class JWTAdapter(JWTPort):
             logging.debug(f"JWT decoded: {_payload}")
             return _payload
         except InvalidSignatureError:
-            logging.error(f"Invalid JWT signature: {cmd}")
+            logging.error(f"Invalid JWT signature")
             raise JWTDecodeError("Invalid JWT signature")
         except ExpiredSignatureError:
-            logging.error(f"JWT signature has expired: {cmd}")
+            logging.error(f"JWT signature has expired")
             raise JWTDecodeError(f"JWT has expired")
         except DecodeError:
-            logging.error(f"Invalid JWT syntax: {cmd}")
+            logging.error(f"Invalid JWT syntax")
             raise JWTDecodeError("Invalid JWT syntax")
