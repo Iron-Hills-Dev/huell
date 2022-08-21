@@ -20,7 +20,7 @@ def test_delete_user_should_create(decode_mock, delete_user_mock, client):
     decode_mock.return_value = JWTPayload("test", "test", 0, 0, UUID("be964b8c-59cf-4549-9f25-eb6bb63824ec"))
 
     # when
-    response = client.delete("/user", headers={"Accept": "text/plain", "Authorization": f"{AUTHORIZATION_PREFIX}test"})
+    response = client.delete("/user", headers={"Accept": "*/*", "Authorization": f"{AUTHORIZATION_PREFIX}test"})
 
     # then
     args = delete_user_mock.call_args.args
@@ -105,7 +105,7 @@ def test_delete_user_error_handling(decode_mock, delete_user_mock, client, error
     decode_mock.return_value = JWTPayload("test", "test", 0, 0, UUID("be964b8c-59cf-4549-9f25-eb6bb63824ec"))
 
     # when
-    response = client.delete("/user", headers={"Accept": "text/plain", "Authorization": f"{AUTHORIZATION_PREFIX}test"})
+    response = client.delete("/user", headers={"Accept": "*/*", "Authorization": f"{AUTHORIZATION_PREFIX}test"})
 
     # then
     assert response.status_code == error.html_code

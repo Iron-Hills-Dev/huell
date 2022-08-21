@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
   title: Huell
-  description: All knowledge known for human race about Ultimate API Guard
-  servers:
-    - url: http://localhost:5080
-      description: local development environment
+  description: All knowledge known to human race about Ultimate API Guard
   version: '1.0'
+servers:
+  - url: http://localhost:5080
+    description: local development environment
 paths:
   /api/v1/login:
     post:
@@ -39,23 +39,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      parameters:
-        - name: Accept
-          in: header
-          description: What user accepts as result
-          example: application/json
-          required: true
-          schema:
-            type: string
-          style: simple
-        - name: Content-Type
-          in: header
-          description: What type user sends in request
-          example: application/json
-          required: true
-          schema:
-            type: string
-          style: simple
   /api/v1/user:
     get:
       summary: Get user's data by id
@@ -107,15 +90,6 @@ paths:
                 desc: "User could not be found - no further information"
       security:
         - bearerAuth: [ ]
-      parameters:
-        - name: Accept
-          in: header
-          description: What user accepts as result
-          example: application/json
-          required: true
-          schema:
-            type: string
-          style: simple
     post:
       summary: Create user
       description: This endpoint creates user with given data
@@ -162,23 +136,6 @@ paths:
               example:
                 code: "USER.UCE"
                 desc: "User could not be created - no further information"
-      parameters:
-        - name: Accept
-          in: header
-          description: What user accepts as result
-          example: application/json
-          required: true
-          schema:
-            type: string
-          style: simple
-        - name: Content-Type
-          in: header
-          description: What type user sends in request
-          example: application/json
-          required: true
-          schema:
-            type: string
-          style: simple
     delete:
       summary: Delete user
       description: This endpoint deletes user and it's data
@@ -225,23 +182,6 @@ paths:
                 desc: "User could not be deleted - no further information"
       security:
         - bearerAuth: [ ]
-      parameters:
-        - name: Accept
-          in: header
-          description: What user accepts as result
-          example: application/json
-          required: true
-          schema:
-            type: string
-          style: simple
-        - name: Authorization
-          in: header
-          description: JWT token of specific user
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA4YjQ5OWU1LTJmYWQtNDlkOS04ZjhhLWZkNDQwZjlkMjQ4ZiIsImJpcnRoIjoxNjU4MDU3ODk1LjE0MzEwNH0.-vxbTqqyu6bd359gFEA5QtvcFb0wv_pM7z7KYFG9hE0
-          required: true
-          schema:
-            type: string
-          style: simple
   /api/v1/user/change-passwd:
     put:
       summary: Change password
@@ -293,23 +233,6 @@ paths:
               example:
                 code: "USER.UDE"
                 desc: "Password could not be changed - no further information"
-    parameters:
-      - name: Accept
-        in: header
-        description: What user accepts as result
-        example: application/json
-        required: true
-        schema:
-          type: string
-        style: simple
-      - name: Content-Type
-        in: header
-        description: What type user sends in request
-        example: application/json
-        required: true
-        schema:
-          type: string
-        style: simple
 
 components:
   securitySchemes:

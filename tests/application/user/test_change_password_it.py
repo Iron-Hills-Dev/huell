@@ -23,7 +23,7 @@ def test_change_password_should_change(decode_mock, change_password_mock, client
 
     # when
     response = client.put("/user/change-passwd",
-                          headers={"Accept": "text/plain", "Content-Type": "application/json",
+                          headers={"Accept": "*/*", "Content-Type": "application/json",
                                    "Authorization": f"{AUTHORIZATION_PREFIX}test"}, json=body.to_json())
 
     # then
@@ -125,7 +125,7 @@ def test_change_password_error_handling(decode_mock, change_password_mock, clien
 
     # when
     response = client.put("/user/change-passwd",
-                          headers={"Accept": "text/plain", "Content-Type": "application/json",
+                          headers={"Accept": "*/*", "Content-Type": "application/json",
                                    "Authorization": f"{AUTHORIZATION_PREFIX}test"}, json=body.to_json())
 
     # then
@@ -150,7 +150,7 @@ def test_change_password_invalid_variable(decode_mock, change_password_mock, cli
 
     # when
     response = client.put("/user/change-passwd",
-                          headers={"Accept": "text/plain", "Content-Type": "application/json",
+                          headers={"Accept": "*/*", "Content-Type": "application/json",
                                    "Authorization": f"{AUTHORIZATION_PREFIX}test"}, json=body)
 
     # then
