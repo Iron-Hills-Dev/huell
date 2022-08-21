@@ -59,7 +59,7 @@ def find_user(user_id):
 
 @_app_.route("/user", methods=["DELETE"])
 @authorization(jwt)
-@headers_check({"Accept": "text/plain"})
+@headers_check({"Accept": "*/*"})
 def delete_user(user_id):
     try:
         logging.info(f"Processing delete user request: user_id={user_id}")
@@ -73,7 +73,7 @@ def delete_user(user_id):
 
 @_app_.route("/user/change-passwd", methods=["PUT"])
 @authorization(jwt)
-@headers_check({"Accept": "text/plain", "Content-Type": "application/json"})
+@headers_check({"Accept": "*/*", "Content-Type": "application/json"})
 def change_password(user_id):
     try:
         logging.info(f"Processing change user password request: user_id={user_id}")
