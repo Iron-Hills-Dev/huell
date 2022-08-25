@@ -1,6 +1,6 @@
 # Huell - Ultimate Guard
 
-Version: `not yet`
+Version: `1.0 BETA`
 
 ## How to setup development environment
 
@@ -120,8 +120,7 @@ Firstly, go to Huell habitat (his repo folder) and go to .docker folder in it
 cd [path to huell repo]/.docker
 ```
 
-<small>(optional) You can change dockerized Huell's config in .docker/.config folder.</small>\
-Then you just need to perform one simple commands to start Huell's work
+Then you just need to perform one simple command to start Huell's work
 
 ```
 docker-compose up --build
@@ -142,8 +141,8 @@ docker-compose up
 
 If you want to communicate with your Huell, you need to connect with specific ports:
 
-* `localhost:5000/api/v1` - this is where you find all of Huell API.
-* `localhost:5000/doc` - documentation (also called bestiary) of Huell.
+* `localhost:5080/api/v1` - this is where you find all of Huell API.
+* `localhost:5080/doc` - documentation (also called bestiary) of Huell.
 * `localhost:5050` - PGADMIN, you can peek at Huell's diary (for the Holy Mother of God, don't let him see you).
 
 ### Default database credentials
@@ -153,26 +152,4 @@ If you want to communicate with your Huell, you need to connect with specific po
 * **POSTGRES HOST:** huell-postgres:5432 (only accessible through PGADMIN)
 * **POSTGRES USERNAME:** huell
 * **POSTGRES PASSWD:** huell
-
-## Config examples
-
-### YAML
-
-```
-user_config:
-  username_char_wl: "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890.:_-+="
-  username_char_bl: ~
-  passwd_char_wl: ~
-  passwd_char_bl: ~
-  username_min_len: 4
-  username_max_len: 16
-  passwd_min_len: 7
-  passwd_max_len: 25
-
-jwt_config:
-  algorithm: "HS512" # only symmetric (HS256, HS384, HS512)
-  exp_time: 1800 # in seconds
-```
-
-<sup><sub>example-config.yml</sub></sup>
 

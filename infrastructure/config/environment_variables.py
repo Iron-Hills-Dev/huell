@@ -38,7 +38,6 @@ def import_envs(config: Config):
 
     for k in default_envs:
         if config.get(k) is None:
-            logging.warning(f"Using default env variable: {k}={default_envs[k]}")
             config.update({k: default_envs[k]})
 
     logging.info("Environment variables imported successfully")
