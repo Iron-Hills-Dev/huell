@@ -28,3 +28,5 @@ def bad_request(error):
     return handle_exception(MethodNotAllowed("The method is not allowed for the requested URL."))
 
 
+from application.user import user_rest_adapter
+from application.auth import auth_rest_adapter

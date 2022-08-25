@@ -14,7 +14,7 @@ class UserQueryPort(ABC):
         pass
 
     @abstractmethod
-    def find_user_by_username (self, username: str) -> User:
+    def find_user_by_username(self, username: str) -> User:
         """
         Finds user's data using his username
         :param username: User's username

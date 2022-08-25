@@ -1,10 +1,10 @@
 import pytest
 
-from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
-from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
-from domain.user.exceptions import UserNotFound, UserDeleteError
+from domain.user.exceptions import UserNotFound
 from domain.user.model.UserCreateCmd import UserCreateCmd
 from domain.user.model.UserDeleteCmd import UserDeleteCmd
+from infrastructure.postgres.user.database_user_modify_adapter import DatabaseUserModifyAdapter
+from infrastructure.postgres.user.database_user_query_adapter import DatabaseUserQueryAdapter
 from tests.decors import using_database
 
 
