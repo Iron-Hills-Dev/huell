@@ -1,0 +1,7 @@
+version: "3.4"
+services:
+  huell:
+    build:
+      dockerfile: .docker/Dockerfile
+      context: ../
+    image: codebusters0/huell:1.0.0

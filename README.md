@@ -1,6 +1,6 @@
 # Huell - Ultimate Guard
 
-Version: `1.0 BETA`
+Version: `1.0.0`
 
 ## How to setup development environment
 

@@ -7,7 +7,7 @@ from infrastructure.config.environment_variables import import_envs
 from infrastructure.config.ports import AppPorts
 from infrastructure.logging.logging_init import logging_init
 
-VERSION = "1.0 BETA"
+VERSION = "1.0.0"
 
 _app_ = Flask(__name__)
 _app_.config.update({"VERSION": VERSION})
